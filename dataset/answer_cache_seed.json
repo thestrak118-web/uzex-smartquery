@@ -1183,5 +1183,4078 @@ null
 "steps": 2,
 "seconds": 34.1,
 "model": "gemini-3.5-flash-lite"
+},
+"datasetda qanday ma'lumotlar mavjud": {
+"text": "Dataset — tovar-xomashyo birjasi bitimlari reyestri (barcha ma’lumotlar sun’iy):\n- **500 000 ta bitim** — 2022-yil 3-yanvardan 2026-yil 30-oktabrgacha\n- **6 616 ta shartnoma** kartochkasi: tovar, atributlar, valyuta, to‘lov va yetkazish muddatlari\n- **14 392 ta kompaniya** (392 sotuvchi, 14 000 xaridor) va **120 ta broker**\n- **41 ta tovar** (230 xil yozuvdan normallashtirilgan), 14 ta hudud\n- Har kun uchun dollar kursi; eksport bitimlari USD da\nHar bir bitimda: sana va vaqt, tovar, hajm, summa, boshlang‘ich narx, savdo turi (kim oshdi, teskari yoki ikki tomonlama auksion), holat, sotuvchi va xaridor, ularning brokerlari, to‘lov va yetkazib berish sanalari.",
+"sql": [
+"select (select count(*) from deals) deals, (select count(*) from contracts) contracts,\n                      (select count(*) from companies) companies,\n                      (select count(*) from companies where role = 'Продавец') sellers,\n                      (select count(*) from brokers) brokers, (select count(distinct product) from contracts) products,\n                      (select count(distinct product_raw) from contracts) raw_names,\n                      (select count(distinct region) from deals) regions"
+],
+"table": {
+"columns": [
+"deals",
+"contracts",
+"companies",
+"sellers",
+"brokers",
+"products",
+"raw_names",
+"regions"
+],
+"rows": [
+[
+500000,
+6616,
+14392,
+392,
+120,
+41,
+230,
+14
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select (select count(*) from deals) deals, (select count(*) from contracts) contracts,\n                      (select count(*) from companies) companies,\n                      (select count(*) from companies where role = 'Продавец') sellers,\n                      (select count(*) from brokers) brokers, (select count(distinct product) from contracts) products,\n                      (select count(distinct product_raw) from contracts) raw_names,\n                      (select count(distinct region) from deals) regions"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"contracts",
+"companies",
+"sellers",
+"brokers",
+"products",
+"raw_names",
+"regions"
+],
+"rows": [
+[
+500000,
+6616,
+14392,
+392,
+120,
+41,
+230,
+14
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select (select count(*) from deals) deals, (select count(*) from contracts) contracts,\n                      (select count(*) from companies) companies,\n                      (select count(*) from companies where role = 'Продавец') sellers,\n                      (select count(*) from brokers) brokers, (select count(distinct product) from contracts) products,\n                      (select count(distinct product_raw) from contracts) raw_names,\n                      (select count(distinct region) from deals) regions"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2025-yilda oylar bo'yicha bitimlar soni va savdo aylanmasi qanday bo'lgan": {
+"text": "2025-yilda oylar bo‘yicha bitimlar soni va aylanma:\n- Yanvar: 6 196 ta bitim, 2,57 trln so‘m\n- Fevral: 5 588 ta bitim, 2,18 trln so‘m\n- Mart: 6 023 ta bitim, 2,33 trln so‘m\n- Aprel: 6 796 ta bitim, 2,52 trln so‘m\n- May: 6 657 ta bitim, 2,53 trln so‘m\n- Iyun: 7 318 ta bitim, 3,05 trln so‘m\n- Iyul: 8 877 ta bitim, 4,16 trln so‘m\n- Avgust: 9 504 ta bitim, 4,43 trln so‘m\n- Sentabr: 15 667 ta bitim, 7,44 trln so‘m\n- Oktabr: 17 808 ta bitim, 8,82 trln so‘m\n- Noyabr: 14 263 ta bitim, 6,88 trln so‘m\n- Dekabr: 11 066 ta bitim, 5,14 trln so‘m\nEng yuqori aylanma — **oktabr** (8,82 trln so‘m). Aylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan.",
+"sql": [
+"select month, count(*) deals, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n               from deals where year = 2025 group by 1 order by 1"
+],
+"table": {
+"columns": [
+"month",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+1,
+6196,
+2572127856870.29
+],
+[
+2,
+5588,
+2179246517483.17
+],
+[
+3,
+6023,
+2329429666121.09
+],
+[
+4,
+6796,
+2518906674425.92
+],
+[
+5,
+6657,
+2534301017570.4
+],
+[
+6,
+7318,
+3053646673204.37
+],
+[
+7,
+8877,
+4158179685314.5
+],
+[
+8,
+9504,
+4428773612464.05
+],
+[
+9,
+15667,
+7441895861141.87
+],
+[
+10,
+17808,
+8817527335701.52
+],
+[
+11,
+14263,
+6883059531681.96
+],
+[
+12,
+11066,
+5143741928077.98
+]
+],
+"row_count": 12,
+"truncated": false,
+"sql": "select month, count(*) deals, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n               from deals where year = 2025 group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"month",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+1,
+6196,
+2572127856870.29
+],
+[
+2,
+5588,
+2179246517483.17
+],
+[
+3,
+6023,
+2329429666121.09
+],
+[
+4,
+6796,
+2518906674425.92
+],
+[
+5,
+6657,
+2534301017570.4
+],
+[
+6,
+7318,
+3053646673204.37
+],
+[
+7,
+8877,
+4158179685314.5
+],
+[
+8,
+9504,
+4428773612464.05
+],
+[
+9,
+15667,
+7441895861141.87
+],
+[
+10,
+17808,
+8817527335701.52
+],
+[
+11,
+14263,
+6883059531681.96
+],
+[
+12,
+11066,
+5143741928077.98
+]
+],
+"row_count": 12,
+"truncated": false,
+"sql": "select month, count(*) deals, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n               from deals where year = 2025 group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2024-yilda karbamidning 1 tonnasi oylar bo'yicha o'rtacha qanchadan sotilgan": {
+"text": "2024-yilda karbamidning 1 tonnasi oylar bo‘yicha o‘rtacha narxi (vaznli):\n- Yanvar: **4 656 748** so‘m/t (7 017 t)\n- Fevral: **4 521 100** so‘m/t (7 966 t)\n- Mart: **4 533 405** so‘m/t (5 736 t)\n- Aprel: **4 613 854** so‘m/t (8 198 t)\n- May: **4 620 392** so‘m/t (8 604 t)\n- Iyun: **4 806 100** so‘m/t (13 008 t)\n- Iyul: **4 826 706** so‘m/t (20 920 t)\n- Avgust: **4 824 123** so‘m/t (24 721 t)\n- Sentabr: **4 840 499** so‘m/t (21 247 t)\n- Oktabr: **4 906 896** so‘m/t (16 950 t)\n- Noyabr: **4 726 626** so‘m/t (10 821 t)\n- Dekabr: **4 676 387** so‘m/t (8 659 t)\nYillik o‘rtacha — **4 762 397 so‘m/t**; eng arzon fevralda, eng qimmat oktabrda. Bekor qilingan bitimlar hisobga olinmadi.",
+"sql": [
+"select month, round(sum(amount) / sum(volume), 2) avg_price_uzs, sum(volume) volume_tonnes, count(*) deals\n               from deals where product = 'Карбамид' and year = 2024 and not is_cancelled and unit = 'тонна' and currency = 'UZS'\n               group by 1 order by 1"
+],
+"table": {
+"columns": [
+"month",
+"avg_price_uzs",
+"volume_tonnes",
+"deals"
+],
+"rows": [
+[
+1,
+4656748.18,
+7017,
+112
+],
+[
+2,
+4521099.52,
+7966,
+104
+],
+[
+3,
+4533404.62,
+5736,
+74
+],
+[
+4,
+4613854.4,
+8198,
+109
+],
+[
+5,
+4620392.43,
+8604,
+130
+],
+[
+6,
+4806099.94,
+13008,
+217
+],
+[
+7,
+4826706.23,
+20920,
+350
+],
+[
+8,
+4824123.14,
+24721,
+349
+],
+[
+9,
+4840499.24,
+21247,
+278
+],
+[
+10,
+4906896.16,
+16950,
+256
+],
+[
+11,
+4726626.01,
+10821,
+164
+],
+[
+12,
+4676387.16,
+8659,
+135
+]
+],
+"row_count": 12,
+"truncated": false,
+"sql": "select month, round(sum(amount) / sum(volume), 2) avg_price_uzs, sum(volume) volume_tonnes, count(*) deals\n               from deals where product = 'Карбамид' and year = 2024 and not is_cancelled and unit = 'тонна' and currency = 'UZS'\n               group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"month",
+"avg_price_uzs",
+"volume_tonnes",
+"deals"
+],
+"rows": [
+[
+1,
+4656748.18,
+7017,
+112
+],
+[
+2,
+4521099.52,
+7966,
+104
+],
+[
+3,
+4533404.62,
+5736,
+74
+],
+[
+4,
+4613854.4,
+8198,
+109
+],
+[
+5,
+4620392.43,
+8604,
+130
+],
+[
+6,
+4806099.94,
+13008,
+217
+],
+[
+7,
+4826706.23,
+20920,
+350
+],
+[
+8,
+4824123.14,
+24721,
+349
+],
+[
+9,
+4840499.24,
+21247,
+278
+],
+[
+10,
+4906896.16,
+16950,
+256
+],
+[
+11,
+4726626.01,
+10821,
+164
+],
+[
+12,
+4676387.16,
+8659,
+135
+]
+],
+"row_count": 12,
+"truncated": false,
+"sql": "select month, round(sum(amount) / sum(volume), 2) avg_price_uzs, sum(volume) volume_tonnes, count(*) deals\n               from deals where product = 'Карбамид' and year = 2024 and not is_cancelled and unit = 'тонна' and currency = 'UZS'\n               group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2025-yilda savdo summasi bo'yicha eng yirik 5 ta xaridor kim": {
+"text": "2025-yilda savdo summasi bo‘yicha eng yirik 5 ta xaridor:\n1. **\"Zoket Invest\" OK** (STIR 983531029) — 1,47 trln so‘m, 2 412 ta bitim\n2. **\"Fo‘sor Qurilish\" MChJ** (STIR 975117742) — 714,63 mlrd so‘m, 1 640 ta bitim\n3. **\"Moto Group\" MChJ** (STIR 903979966) — 447,44 mlrd so‘m, 910 ta bitim\n4. **\"Qasi Invest\" MChJ** (STIR 908181397) — 366,84 mlrd so‘m, 767 ta bitim\n5. **HO‘CHAL GROUP MCHJ** (STIR 908704393) — 357,32 mlrd so‘m, 634 ta bitim\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan.",
+"sql": [
+"select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true and d.year = 2025\n                group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"name",
+"inn",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"\"Zoket Invest\" OK",
+"983531029",
+2412,
+1465955188298.19
+],
+[
+"\"Fo‘sor Qurilish\" MChJ",
+"975117742",
+1640,
+714626517428.5
+],
+[
+"\"Moto Group\" MChJ",
+"903979966",
+910,
+447438425601.44
+],
+[
+"\"Qasi Invest\" MChJ",
+"908181397",
+767,
+366842711384.52
+],
+[
+"HO‘CHAL GROUP MCHJ",
+"908704393",
+634,
+357324924533.01
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true and d.year = 2025\n                group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"name",
+"inn",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"\"Zoket Invest\" OK",
+"983531029",
+2412,
+1465955188298.19
+],
+[
+"\"Fo‘sor Qurilish\" MChJ",
+"975117742",
+1640,
+714626517428.5
+],
+[
+"\"Moto Group\" MChJ",
+"903979966",
+910,
+447438425601.44
+],
+[
+"\"Qasi Invest\" MChJ",
+"908181397",
+767,
+366842711384.52
+],
+[
+"HO‘CHAL GROUP MCHJ",
+"908704393",
+634,
+357324924533.01
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true and d.year = 2025\n                group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2026-yilda bitimlar holati bo'yicha qanday taqsimlangan (ijro etilgan, bekor qilingan, qisman va h.k.)": {
+"text": "2026-yilda 99 306 ta bitim holatlar bo‘yicha (30.10.2026 holatiga):\n- Ijro etilgan: **76 418** (77,0%)\n- Bekor qilingan (to‘lanmagan): **6 266** (6,3%)\n- To‘langan, yetkazilmagan: **5 854** (5,9%)\n- Qisman ijro etilgan: **4 050** (4,1%)\n- Tuzilgan (forvard/fyuchers): **3 954** (4,0%)\n- To‘lov kutilmoqda: **1 714** (1,7%)\n- Yangi (30.10.2026): **964** (1,0%)\n- Imzolanmagan: **86** (0,1%)",
+"sql": [
+"select status, count(*) deals, round(100.0 * count(*) / sum(count(*)) over (), 2) share_pct\n               from deals where year = 2026 group by 1 order by 2 desc"
+],
+"table": {
+"columns": [
+"status",
+"deals",
+"share_pct"
+],
+"rows": [
+[
+"Исполнен",
+76418,
+76.95
+],
+[
+"Аннулирован(Не оплачен)",
+6266,
+6.31
+],
+[
+"Оплачен",
+5854,
+5.89
+],
+[
+"Исполнен(Частично)",
+4050,
+4.08
+],
+[
+"Заключен",
+3954,
+3.98
+],
+[
+"Ждёт оплату",
+1714,
+1.73
+],
+[
+"Новый",
+964,
+0.97
+],
+[
+"Не подписан",
+86,
+0.09
+]
+],
+"row_count": 8,
+"truncated": false,
+"sql": "select status, count(*) deals, round(100.0 * count(*) / sum(count(*)) over (), 2) share_pct\n               from deals where year = 2026 group by 1 order by 2 desc"
+},
+"tables": [
+{
+"columns": [
+"status",
+"deals",
+"share_pct"
+],
+"rows": [
+[
+"Исполнен",
+76418,
+76.95
+],
+[
+"Аннулирован(Не оплачен)",
+6266,
+6.31
+],
+[
+"Оплачен",
+5854,
+5.89
+],
+[
+"Исполнен(Частично)",
+4050,
+4.08
+],
+[
+"Заключен",
+3954,
+3.98
+],
+[
+"Ждёт оплату",
+1714,
+1.73
+],
+[
+"Новый",
+964,
+0.97
+],
+[
+"Не подписан",
+86,
+0.09
+]
+],
+"row_count": 8,
+"truncated": false,
+"sql": "select status, count(*) deals, round(100.0 * count(*) / sum(count(*)) over (), 2) share_pct\n               from deals where year = 2026 group by 1 order by 2 desc"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"yillar bo'yicha bitimlar soni va savdo aylanmasini taqqosla": {
+"text": "Yillar bo‘yicha bitimlar soni va savdo aylanmasi:\n- **2022**: 84 299 ta bitim, aylanma **27,97 trln so‘m**, bekor qilingan 6,8%\n- **2023**: 93 985 ta bitim, aylanma **34,19 trln so‘m**, bekor qilingan 6,7%\n- **2024**: 106 647 ta bitim, aylanma **42,72 trln so‘m**, bekor qilingan 6,9%\n- **2025**: 115 763 ta bitim, aylanma **52,06 trln so‘m**, bekor qilingan 7,0%\n- **2026**: 99 306 ta bitim, aylanma **48,80 trln so‘m**, bekor qilingan 6,3%\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan. 2026-yil ma’lumotlari 30-oktabrgacha.",
+"sql": [
+"select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"shartnomalar tovar kategoriyalari bo'yicha qanday taqsimlangan": {
+"text": "6 616 ta shartnoma tovar kategoriyalari bo‘yicha:\n- Qishloq xo‘jaligi mahsulotlari: **2 097** ta (31,7%), 5 xil tovar\n- Oziq-ovqat mahsulotlari: **1 462** ta (22,1%), 7 xil tovar\n- Qurilish materiallari: **1 024** ta (15,5%), 6 xil tovar\n- Neft mahsulotlari: **675** ta (10,2%), 5 xil tovar\n- Kimyo mahsulotlari: **416** ta (6,3%), 6 xil tovar\n- Metall mahsulotlari: **355** ta (5,4%), 5 xil tovar\n- Sanoat tovarlari: **331** ta (5,0%), 4 xil tovar\n- Polimer mahsulotlari: **256** ta (3,9%), 3 xil tovar",
+"sql": [
+"select category, count(*) contracts, count(distinct product) products\n               from contracts group by 1 order by 2 desc"
+],
+"table": {
+"columns": [
+"category",
+"contracts",
+"products"
+],
+"rows": [
+[
+"Сельскохозяйственная продукция",
+2097,
+5
+],
+[
+"Продовольственные товары",
+1462,
+7
+],
+[
+"Строительные материалы",
+1024,
+6
+],
+[
+"Нефтепродукты",
+675,
+5
+],
+[
+"Химическая продукция",
+416,
+6
+],
+[
+"Металлопродукция",
+355,
+5
+],
+[
+"Промышленные товары",
+331,
+4
+],
+[
+"Полимерная продукция",
+256,
+3
+]
+],
+"row_count": 8,
+"truncated": false,
+"sql": "select category, count(*) contracts, count(distinct product) products\n               from contracts group by 1 order by 2 desc"
+},
+"tables": [
+{
+"columns": [
+"category",
+"contracts",
+"products"
+],
+"rows": [
+[
+"Сельскохозяйственная продукция",
+2097,
+5
+],
+[
+"Продовольственные товары",
+1462,
+7
+],
+[
+"Строительные материалы",
+1024,
+6
+],
+[
+"Нефтепродукты",
+675,
+5
+],
+[
+"Химическая продукция",
+416,
+6
+],
+[
+"Металлопродукция",
+355,
+5
+],
+[
+"Промышленные товары",
+331,
+4
+],
+[
+"Полимерная продукция",
+256,
+3
+]
+],
+"row_count": 8,
+"truncated": false,
+"sql": "select category, count(*) contracts, count(distinct product) products\n               from contracts group by 1 order by 2 desc"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"bitimlar soni bo'yicha eng faol 5 ta xaridor kim": {
+"text": "Bitimlar soni bo‘yicha eng faol 5 ta xaridor (2022–2026):\n1. **\"Zoket Invest\" OK** (STIR 983531029) — 5,71 trln so‘m, 10 150 ta bitim\n2. **\"Fo‘sor Qurilish\" MChJ** (STIR 975117742) — 2,87 trln so‘m, 7 174 ta bitim\n3. **\"Moto Group\" MChJ** (STIR 903979966) — 1,61 trln so‘m, 3 763 ta bitim\n4. **\"Qasi Invest\" MChJ** (STIR 908181397) — 1,34 trln so‘m, 3 267 ta bitim\n5. **\"ПАФИВЎР ПЛУС\" МЧЖ** (STIR 994051945) — 1,02 trln so‘m, 3 261 ta bitim\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan.",
+"sql": [
+"select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true \n                group by 1, 2 order by deals desc limit 5"
+],
+"table": {
+"columns": [
+"name",
+"inn",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"\"Zoket Invest\" OK",
+"983531029",
+10150,
+5709800900091.75
+],
+[
+"\"Fo‘sor Qurilish\" MChJ",
+"975117742",
+7174,
+2865066759476.54
+],
+[
+"\"Moto Group\" MChJ",
+"903979966",
+3763,
+1608094950769.94
+],
+[
+"\"Qasi Invest\" MChJ",
+"908181397",
+3267,
+1336664588401.68
+],
+[
+"\"ПАФИВЎР ПЛУС\" МЧЖ",
+"994051945",
+3261,
+1024656383427.57
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true \n                group by 1, 2 order by deals desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"name",
+"inn",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"\"Zoket Invest\" OK",
+"983531029",
+10150,
+5709800900091.75
+],
+[
+"\"Fo‘sor Qurilish\" MChJ",
+"975117742",
+7174,
+2865066759476.54
+],
+[
+"\"Moto Group\" MChJ",
+"903979966",
+3763,
+1608094950769.94
+],
+[
+"\"Qasi Invest\" MChJ",
+"908181397",
+3267,
+1336664588401.68
+],
+[
+"\"ПАФИВЎР ПЛУС\" МЧЖ",
+"994051945",
+3261,
+1024656383427.57
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true \n                group by 1, 2 order by deals desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"bitimlar soni bo'yicha top-5 broker (xaridor tomonida) kim": {
+"text": "Xaridor tomonidagi bitimlar soni bo‘yicha top-5 broker (2022–2026):\n1. **FIPI BROKER MCHJ** (BK017) — 13 447 ta bitim, 7,00 trln so‘m\n2. **\"Gucham Broker\" MChJ** (BK111) — 11 512 ta bitim, 5,10 trln so‘m\n3. **\"ЗИЗАН БРОКЕР\" МЧЖ** (BK107) — 10 068 ta bitim, 4,40 trln so‘m\n4. **\"Hulun Broker\" AJ** (BK034) — 9 811 ta bitim, 3,95 trln so‘m\n5. **VOQILIR BROKER XK** (BK076) — 8 595 ta bitim, 4,10 trln so‘m",
+"sql": [
+"select b.name, b.broker_code, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n               from deals d join brokers b on b.broker_code = d.buyer_broker group by 1, 2 order by deals desc limit 5"
+],
+"table": {
+"columns": [
+"name",
+"broker_code",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"FIPI BROKER MCHJ",
+"BK017",
+13447,
+6998249698295.41
+],
+[
+"\"Gucham Broker\" MChJ",
+"BK111",
+11512,
+5097321760752.74
+],
+[
+"\"ЗИЗАН БРОКЕР\" МЧЖ",
+"BK107",
+10068,
+4397129140676.81
+],
+[
+"\"Hulun Broker\" AJ",
+"BK034",
+9811,
+3952241984281.22
+],
+[
+"VOQILIR BROKER XK",
+"BK076",
+8595,
+4095473814512.12
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select b.name, b.broker_code, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n               from deals d join brokers b on b.broker_code = d.buyer_broker group by 1, 2 order by deals desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"name",
+"broker_code",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"FIPI BROKER MCHJ",
+"BK017",
+13447,
+6998249698295.41
+],
+[
+"\"Gucham Broker\" MChJ",
+"BK111",
+11512,
+5097321760752.74
+],
+[
+"\"ЗИЗАН БРОКЕР\" МЧЖ",
+"BK107",
+10068,
+4397129140676.81
+],
+[
+"\"Hulun Broker\" AJ",
+"BK034",
+9811,
+3952241984281.22
+],
+[
+"VOQILIR BROKER XK",
+"BK076",
+8595,
+4095473814512.12
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select b.name, b.broker_code, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n               from deals d join brokers b on b.broker_code = d.buyer_broker group by 1, 2 order by deals desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"yillar bo'yicha bitimlar soni qanday o'zgargan va o'sish sur'ati qancha": {
+"text": "Yillar bo‘yicha bitimlar soni va o‘tgan yilga nisbatan o‘sish:\n- **2022**: 84 299 ta\n- **2023**: 93 985 ta (+11,5%)\n- **2024**: 106 647 ta (+13,5%)\n- **2025**: 115 763 ta (+8,6%)\n- **2026**: 99 306 ta (-14,2%)\n2022–2025-yillarda o‘rtacha yillik o‘sish **11,2%**. 2026-yil to‘liq emas (30-oktabrgacha), shuning uchun uning pasayishi yil tugamaganidan.",
+"sql": [
+"select year, count(*) deals,\n                      round(100.0 * (count(*) - lag(count(*)) over (order by year)) / lag(count(*)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"deals",
+"growth_pct"
+],
+"rows": [
+[
+2022,
+84299,
+null
+],
+[
+2023,
+93985,
+11.49
+],
+[
+2024,
+106647,
+13.47
+],
+[
+2025,
+115763,
+8.55
+],
+[
+2026,
+99306,
+-14.22
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals,\n                      round(100.0 * (count(*) - lag(count(*)) over (order by year)) / lag(count(*)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"deals",
+"growth_pct"
+],
+"rows": [
+[
+2022,
+84299,
+null
+],
+[
+2023,
+93985,
+11.49
+],
+[
+2024,
+106647,
+13.47
+],
+[
+2025,
+115763,
+8.55
+],
+[
+2026,
+99306,
+-14.22
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals,\n                      round(100.0 * (count(*) - lag(count(*)) over (order by year)) / lag(count(*)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"yillar bo'yicha savdo aylanmasi so'mda qanday o'zgargan": {
+"text": "Yillar bo‘yicha savdo aylanmasi (so‘mda) va o‘tgan yilga nisbatan o‘zgarish:\n- **2022**: 27,97 trln so‘m\n- **2023**: 34,19 trln so‘m (+22,2%)\n- **2024**: 42,72 trln so‘m (+25,0%)\n- **2025**: 52,06 trln so‘m (+21,9%)\n- **2026**: 48,80 trln so‘m (-6,3%)\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan. 2026-yil ma’lumotlari 30-oktabrgacha.",
+"sql": [
+"select year, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      round(100.0 * (sum(amount_uzs) filter (where not is_cancelled)\n                            - lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year))\n                            / lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"turnover_uzs",
+"growth_pct"
+],
+"rows": [
+[
+2022,
+27965891730951.84,
+null
+],
+[
+2023,
+34187428452052.48,
+22.25
+],
+[
+2024,
+42724135079483.56,
+24.97
+],
+[
+2025,
+52060836360056.94,
+21.85
+],
+[
+2026,
+48800447257148.93,
+-6.26
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      round(100.0 * (sum(amount_uzs) filter (where not is_cancelled)\n                            - lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year))\n                            / lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"turnover_uzs",
+"growth_pct"
+],
+"rows": [
+[
+2022,
+27965891730951.84,
+null
+],
+[
+2023,
+34187428452052.48,
+22.25
+],
+[
+2024,
+42724135079483.56,
+24.97
+],
+[
+2025,
+52060836360056.94,
+21.85
+],
+[
+2026,
+48800447257148.93,
+-6.26
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      round(100.0 * (sum(amount_uzs) filter (where not is_cancelled)\n                            - lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year))\n                            / lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"yillar bo'yicha bekor qilingan bitimlar ulushi qanday o'zgargan": {
+"text": "Yillar bo‘yicha bekor qilingan (muddatida to‘lanmagan) bitimlar ulushi:\n- **2022**: 5 732 ta bekor qilingan / 84 299 ta — **6,8%**\n- **2023**: 6 313 ta bekor qilingan / 93 985 ta — **6,7%**\n- **2024**: 7 323 ta bekor qilingan / 106 647 ta — **6,9%**\n- **2025**: 8 085 ta bekor qilingan / 115 763 ta — **7,0%**\n- **2026**: 6 266 ta bekor qilingan / 99 306 ta — **6,3%**\nUlush barqaror: 6,3% dan 7,0% gacha.",
+"sql": [
+"select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2022-yil bo'yicha asosiy ko'rsatkichlar: bitimlar soni, aylanma, bekor qilinganlar ulushi va eng ko'p sotilgan tovar": {
+"text": "2022-yil bo‘yicha asosiy ko‘rsatkichlar:\n- Bitimlar: **84 299 ta**\n- Bekor qilingan: **5 732 ta** (6,8%)\n- Savdo aylanmasi: **27,97 trln so‘m**\n- Faol xaridorlar: 12 536, sotuvchilar: 136\n- Eng ko‘p sotilgan tovar (aylanma bo‘yicha): **Paxta xomashyosi** — 8,11 trln so‘m (23 947 ta bitim)\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2022",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2022 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+8105560829283.68,
+23947
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+5603480070612.0,
+6379
+],
+[
+"Катод медный",
+"Mis katod",
+2012555440115.33,
+797
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+1957734416206.0,
+2103
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+1430566129791.0,
+4791
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2022 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+84299,
+5732,
+27965891730952.01,
+12536,
+136
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2022"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+8105560829283.68,
+23947
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+5603480070612.0,
+6379
+],
+[
+"Катод медный",
+"Mis katod",
+2012555440115.33,
+797
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+1957734416206.0,
+2103
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+1430566129791.0,
+4791
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2022 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2023-yil bo'yicha asosiy ko'rsatkichlar: bitimlar soni, aylanma, bekor qilinganlar ulushi va eng ko'p sotilgan tovar": {
+"text": "2023-yil bo‘yicha asosiy ko‘rsatkichlar:\n- Bitimlar: **93 985 ta**\n- Bekor qilingan: **6 313 ta** (6,7%)\n- Savdo aylanmasi: **34,19 trln so‘m**\n- Faol xaridorlar: 12 842, sotuvchilar: 216\n- Eng ko‘p sotilgan tovar (aylanma bo‘yicha): **Paxta xomashyosi** — 10,28 trln so‘m (26 784 ta bitim)\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2023",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2023 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+10281373290088.24,
+26784
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+6439214811565.0,
+7123
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+2343733253170.0,
+2399
+],
+[
+"Катод медный",
+"Mis katod",
+2251508964416.66,
+841
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+1780563647666.0,
+5290
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2023 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+93985,
+6313,
+34187428452052.39,
+12842,
+216
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2023"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+10281373290088.24,
+26784
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+6439214811565.0,
+7123
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+2343733253170.0,
+2399
+],
+[
+"Катод медный",
+"Mis katod",
+2251508964416.66,
+841
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+1780563647666.0,
+5290
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2023 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2024-yil bo'yicha asosiy ko'rsatkichlar: bitimlar soni, aylanma, bekor qilinganlar ulushi va eng ko'p sotilgan tovar": {
+"text": "2024-yil bo‘yicha asosiy ko‘rsatkichlar:\n- Bitimlar: **106 647 ta**\n- Bekor qilingan: **7 323 ta** (6,9%)\n- Savdo aylanmasi: **42,72 trln so‘m**\n- Faol xaridorlar: 13 040, sotuvchilar: 278\n- Eng ko‘p sotilgan tovar (aylanma bo‘yicha): **Paxta xomashyosi** — 12,92 trln so‘m (30 037 ta bitim)\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2024",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2024 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+12915322307345.95,
+30037
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+8129749174135.0,
+8190
+],
+[
+"Катод медный",
+"Mis katod",
+2972321336256.2,
+997
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+2809866592381.0,
+2610
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2081509050779.0,
+6037
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2024 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+106647,
+7323,
+42724135079483.63,
+13040,
+278
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2024"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+12915322307345.95,
+30037
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+8129749174135.0,
+8190
+],
+[
+"Катод медный",
+"Mis katod",
+2972321336256.2,
+997
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+2809866592381.0,
+2610
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2081509050779.0,
+6037
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2024 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2025-yil bo'yicha asosiy ko'rsatkichlar: bitimlar soni, aylanma, bekor qilinganlar ulushi va eng ko'p sotilgan tovar": {
+"text": "2025-yil bo‘yicha asosiy ko‘rsatkichlar:\n- Bitimlar: **115 763 ta**\n- Bekor qilingan: **8 085 ta** (7,0%)\n- Savdo aylanmasi: **52,06 trln so‘m**\n- Faol xaridorlar: 13 209, sotuvchilar: 319\n- Eng ko‘p sotilgan tovar (aylanma bo‘yicha): **Paxta xomashyosi** — 16,96 trln so‘m (33 056 ta bitim)\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2025",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+16957079437704.35,
+33056
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9243437724773.0,
+8580
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3464342324683.0,
+2936
+],
+[
+"Катод медный",
+"Mis katod",
+3441760869559.04,
+1037
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2297020654213.0,
+6576
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+115763,
+8085,
+52060836360057.09,
+13209,
+319
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2025"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+16957079437704.35,
+33056
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9243437724773.0,
+8580
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3464342324683.0,
+2936
+],
+[
+"Катод медный",
+"Mis katod",
+3441760869559.04,
+1037
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2297020654213.0,
+6576
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"2026-yil bo'yicha asosiy ko'rsatkichlar: bitimlar soni, aylanma, bekor qilinganlar ulushi va eng ko'p sotilgan tovar": {
+"text": "2026-yil bo‘yicha asosiy ko‘rsatkichlar:\n- Bitimlar: **99 306 ta**\n- Bekor qilingan: **6 266 ta** (6,3%)\n- Savdo aylanmasi: **48,80 trln so‘m**\n- Faol xaridorlar: 12 878, sotuvchilar: 335\n- Eng ko‘p sotilgan tovar (aylanma bo‘yicha): **Paxta xomashyosi** — 12,77 trln so‘m (22 384 ta bitim)\nAylanma bekor qilingan (to‘lanmagan) bitimlarsiz hisoblangan. 2026-yil ma’lumotlari 30-oktabrgacha.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2026",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2026 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+12765884755818.01,
+22384
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9940487491314.0,
+8351
+],
+[
+"Катод медный",
+"Mis katod",
+3805651260866.91,
+1078
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3066985139368.0,
+2444
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2343686150828.0,
+6053
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2026 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+99306,
+6266,
+48800447257149.04,
+12878,
+335
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2026"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+12765884755818.01,
+22384
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9940487491314.0,
+8351
+],
+[
+"Катод медный",
+"Mis katod",
+3805651260866.91,
+1078
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3066985139368.0,
+2444
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2343686150828.0,
+6053
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2026 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"сколько сделок заключено в 2025 году": {
+"text": "В 2025 году заключено **115 763 сделок**.\n- Аннулировано (не оплачено): **8 085** (7,0%)\n- Оборот состоявшихся сделок: **52,06 трлн сум**",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                      sum(amount_uzs) filter (where not is_cancelled) turnover_uzs from deals where year = 2025"
+],
+"table": {
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs"
+],
+"rows": [
+[
+115763,
+8085,
+52060836360056.94
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                      sum(amount_uzs) filter (where not is_cancelled) turnover_uzs from deals where year = 2025"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs"
+],
+"rows": [
+[
+115763,
+8085,
+52060836360056.94
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                      sum(amount_uzs) filter (where not is_cancelled) turnover_uzs from deals where year = 2025"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"сравни количество сделок по годам": {
+"text": "Количество сделок по годам:\n- **2022**: 84 299 сделок\n- **2023**: 93 985 сделок\n- **2024**: 106 647 сделок\n- **2025**: 115 763 сделок\n- **2026**: 99 306 сделок\nБольше всего сделок — **в 2025 году** (115 763). Данные за 2026 год — по 30 октября.",
+"sql": [
+"select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"какие данные доступны в датасете": {
+"text": "Датасет — реестр сделок товарно-сырьевой биржи (все данные синтетические):\n- **500 000 сделок** — с 3 января 2022 по 30 октября 2026\n- **6 616 карточек контрактов**: товар, атрибуты, валюта, сроки оплаты и поставки\n- **14 392 компаний** (392 продавцов, 14 000 покупателей) и **120 брокеров**\n- **41 товар** (нормализовано из 230 вариантов написания), 14 регионов\n- Курс доллара на каждый день; экспортные сделки — в USD\nВ каждой сделке: дата и время, товар, объём, сумма, стартовая цена, тип торгов (английский, обратный или двусторонний аукцион), статус, продавец и покупатель, их брокеры, даты оплаты и поставки.",
+"sql": [
+"select (select count(*) from deals) deals, (select count(*) from contracts) contracts,\n                      (select count(*) from companies) companies,\n                      (select count(*) from companies where role = 'Продавец') sellers,\n                      (select count(*) from brokers) brokers, (select count(distinct product) from contracts) products,\n                      (select count(distinct product_raw) from contracts) raw_names,\n                      (select count(distinct region) from deals) regions"
+],
+"table": {
+"columns": [
+"deals",
+"contracts",
+"companies",
+"sellers",
+"brokers",
+"products",
+"raw_names",
+"regions"
+],
+"rows": [
+[
+500000,
+6616,
+14392,
+392,
+120,
+41,
+230,
+14
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select (select count(*) from deals) deals, (select count(*) from contracts) contracts,\n                      (select count(*) from companies) companies,\n                      (select count(*) from companies where role = 'Продавец') sellers,\n                      (select count(*) from brokers) brokers, (select count(distinct product) from contracts) products,\n                      (select count(distinct product_raw) from contracts) raw_names,\n                      (select count(distinct region) from deals) regions"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"contracts",
+"companies",
+"sellers",
+"brokers",
+"products",
+"raw_names",
+"regions"
+],
+"rows": [
+[
+500000,
+6616,
+14392,
+392,
+120,
+41,
+230,
+14
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select (select count(*) from deals) deals, (select count(*) from contracts) contracts,\n                      (select count(*) from companies) companies,\n                      (select count(*) from companies where role = 'Продавец') sellers,\n                      (select count(*) from brokers) brokers, (select count(distinct product) from contracts) products,\n                      (select count(distinct product_raw) from contracts) raw_names,\n                      (select count(distinct region) from deals) regions"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"топ-5 товаров по объёму торгов в 2025 году": {
+"text": "Топ-5 товаров по обороту торгов в 2025 году:\n1. **Хлопок-сырец** — 16,96 трлн сум (1 844 730 т, 33 056 сделок)\n2. **Пшеница продовольственная** — 9,24 трлн сум (2 191 361 т, 8 580 сделок)\n3. **Масло хлопковое** — 3,46 трлн сум (139 725 т, 2 936 сделок)\n4. **Катод медный** — 3,44 трлн сум (23 274 т, 1 037 сделок)\n5. **Дизельное топливо** — 2,30 трлн сум (176 180 т, 6 576 сделок)\nОборот рассчитан без аннулированных (неоплаченных) сделок.",
+"sql": [
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      sum(volume_tonnes) filter (where not is_cancelled) volume_tonnes, count(*) deals\n               from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"volume_tonnes",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+16957079437704.35,
+1844729.92,
+33056
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9243437724773.0,
+2191361.0,
+8580
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3464342324683.0,
+139725.0,
+2936
+],
+[
+"Катод медный",
+"Mis katod",
+3441760869559.04,
+23274.0,
+1037
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2297020654213.0,
+176179.86,
+6576
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      sum(volume_tonnes) filter (where not is_cancelled) volume_tonnes, count(*) deals\n               from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"volume_tonnes",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+16957079437704.35,
+1844729.92,
+33056
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9243437724773.0,
+2191361.0,
+8580
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3464342324683.0,
+139725.0,
+2936
+],
+[
+"Катод медный",
+"Mis katod",
+3441760869559.04,
+23274.0,
+1037
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2297020654213.0,
+176179.86,
+6576
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      sum(volume_tonnes) filter (where not is_cancelled) volume_tonnes, count(*) deals\n               from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"каким было количество сделок и оборот по месяцам в 2025 году": {
+"text": "Количество сделок и оборот по месяцам в 2025 году:\n- Январь: 6 196 сделок, 2,57 трлн сум\n- Февраль: 5 588 сделок, 2,18 трлн сум\n- Март: 6 023 сделок, 2,33 трлн сум\n- Апрель: 6 796 сделок, 2,52 трлн сум\n- Май: 6 657 сделок, 2,53 трлн сум\n- Июнь: 7 318 сделок, 3,05 трлн сум\n- Июль: 8 877 сделок, 4,16 трлн сум\n- Август: 9 504 сделок, 4,43 трлн сум\n- Сентябрь: 15 667 сделок, 7,44 трлн сум\n- Октябрь: 17 808 сделок, 8,82 трлн сум\n- Ноябрь: 14 263 сделок, 6,88 трлн сум\n- Декабрь: 11 066 сделок, 5,14 трлн сум\nМаксимальный оборот — **октябрь** (8,82 трлн сум). Оборот рассчитан без аннулированных (неоплаченных) сделок.",
+"sql": [
+"select month, count(*) deals, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n               from deals where year = 2025 group by 1 order by 1"
+],
+"table": {
+"columns": [
+"month",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+1,
+6196,
+2572127856870.29
+],
+[
+2,
+5588,
+2179246517483.17
+],
+[
+3,
+6023,
+2329429666121.09
+],
+[
+4,
+6796,
+2518906674425.92
+],
+[
+5,
+6657,
+2534301017570.4
+],
+[
+6,
+7318,
+3053646673204.37
+],
+[
+7,
+8877,
+4158179685314.5
+],
+[
+8,
+9504,
+4428773612464.05
+],
+[
+9,
+15667,
+7441895861141.87
+],
+[
+10,
+17808,
+8817527335701.52
+],
+[
+11,
+14263,
+6883059531681.96
+],
+[
+12,
+11066,
+5143741928077.98
+]
+],
+"row_count": 12,
+"truncated": false,
+"sql": "select month, count(*) deals, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n               from deals where year = 2025 group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"month",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+1,
+6196,
+2572127856870.29
+],
+[
+2,
+5588,
+2179246517483.17
+],
+[
+3,
+6023,
+2329429666121.09
+],
+[
+4,
+6796,
+2518906674425.92
+],
+[
+5,
+6657,
+2534301017570.4
+],
+[
+6,
+7318,
+3053646673204.37
+],
+[
+7,
+8877,
+4158179685314.5
+],
+[
+8,
+9504,
+4428773612464.05
+],
+[
+9,
+15667,
+7441895861141.87
+],
+[
+10,
+17808,
+8817527335701.52
+],
+[
+11,
+14263,
+6883059531681.96
+],
+[
+12,
+11066,
+5143741928077.98
+]
+],
+"row_count": 12,
+"truncated": false,
+"sql": "select month, count(*) deals, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n               from deals where year = 2025 group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"какова средняя цена тонны карбамида по месяцам в 2024 году": {
+"text": "Средняя (взвешенная) цена тонны карбамида по месяцам в 2024 году:\n- Январь: **4 656 748** сум/т (7 017 т)\n- Февраль: **4 521 100** сум/т (7 966 т)\n- Март: **4 533 405** сум/т (5 736 т)\n- Апрель: **4 613 854** сум/т (8 198 т)\n- Май: **4 620 392** сум/т (8 604 т)\n- Июнь: **4 806 100** сум/т (13 008 т)\n- Июль: **4 826 706** сум/т (20 920 т)\n- Август: **4 824 123** сум/т (24 721 т)\n- Сентябрь: **4 840 499** сум/т (21 247 т)\n- Октябрь: **4 906 896** сум/т (16 950 т)\n- Ноябрь: **4 726 626** сум/т (10 821 т)\n- Декабрь: **4 676 387** сум/т (8 659 т)\nСреднегодовая — **4 762 397 сум/т**; минимум в феврале, максимум в октябре. Аннулированные сделки не учтены.",
+"sql": [
+"select month, round(sum(amount) / sum(volume), 2) avg_price_uzs, sum(volume) volume_tonnes, count(*) deals\n               from deals where product = 'Карбамид' and year = 2024 and not is_cancelled and unit = 'тонна' and currency = 'UZS'\n               group by 1 order by 1"
+],
+"table": {
+"columns": [
+"month",
+"avg_price_uzs",
+"volume_tonnes",
+"deals"
+],
+"rows": [
+[
+1,
+4656748.18,
+7017,
+112
+],
+[
+2,
+4521099.52,
+7966,
+104
+],
+[
+3,
+4533404.62,
+5736,
+74
+],
+[
+4,
+4613854.4,
+8198,
+109
+],
+[
+5,
+4620392.43,
+8604,
+130
+],
+[
+6,
+4806099.94,
+13008,
+217
+],
+[
+7,
+4826706.23,
+20920,
+350
+],
+[
+8,
+4824123.14,
+24721,
+349
+],
+[
+9,
+4840499.24,
+21247,
+278
+],
+[
+10,
+4906896.16,
+16950,
+256
+],
+[
+11,
+4726626.01,
+10821,
+164
+],
+[
+12,
+4676387.16,
+8659,
+135
+]
+],
+"row_count": 12,
+"truncated": false,
+"sql": "select month, round(sum(amount) / sum(volume), 2) avg_price_uzs, sum(volume) volume_tonnes, count(*) deals\n               from deals where product = 'Карбамид' and year = 2024 and not is_cancelled and unit = 'тонна' and currency = 'UZS'\n               group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"month",
+"avg_price_uzs",
+"volume_tonnes",
+"deals"
+],
+"rows": [
+[
+1,
+4656748.18,
+7017,
+112
+],
+[
+2,
+4521099.52,
+7966,
+104
+],
+[
+3,
+4533404.62,
+5736,
+74
+],
+[
+4,
+4613854.4,
+8198,
+109
+],
+[
+5,
+4620392.43,
+8604,
+130
+],
+[
+6,
+4806099.94,
+13008,
+217
+],
+[
+7,
+4826706.23,
+20920,
+350
+],
+[
+8,
+4824123.14,
+24721,
+349
+],
+[
+9,
+4840499.24,
+21247,
+278
+],
+[
+10,
+4906896.16,
+16950,
+256
+],
+[
+11,
+4726626.01,
+10821,
+164
+],
+[
+12,
+4676387.16,
+8659,
+135
+]
+],
+"row_count": 12,
+"truncated": false,
+"sql": "select month, round(sum(amount) / sum(volume), 2) avg_price_uzs, sum(volume) volume_tonnes, count(*) deals\n               from deals where product = 'Карбамид' and year = 2024 and not is_cancelled and unit = 'тонна' and currency = 'UZS'\n               group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"кто 5 крупнейших покупателей по сумме сделок в 2025 году": {
+"text": "5 крупнейших покупателей по сумме сделок в 2025 году:\n1. **\"Zoket Invest\" OK** (ИНН 983531029) — 1,47 трлн сум, 2 412 сделок\n2. **\"Fo‘sor Qurilish\" MChJ** (ИНН 975117742) — 714,63 млрд сум, 1 640 сделок\n3. **\"Moto Group\" MChJ** (ИНН 903979966) — 447,44 млрд сум, 910 сделок\n4. **\"Qasi Invest\" MChJ** (ИНН 908181397) — 366,84 млрд сум, 767 сделок\n5. **HO‘CHAL GROUP MCHJ** (ИНН 908704393) — 357,32 млрд сум, 634 сделок\nОборот рассчитан без аннулированных (неоплаченных) сделок.",
+"sql": [
+"select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true and d.year = 2025\n                group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"name",
+"inn",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"\"Zoket Invest\" OK",
+"983531029",
+2412,
+1465955188298.19
+],
+[
+"\"Fo‘sor Qurilish\" MChJ",
+"975117742",
+1640,
+714626517428.5
+],
+[
+"\"Moto Group\" MChJ",
+"903979966",
+910,
+447438425601.44
+],
+[
+"\"Qasi Invest\" MChJ",
+"908181397",
+767,
+366842711384.52
+],
+[
+"HO‘CHAL GROUP MCHJ",
+"908704393",
+634,
+357324924533.01
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true and d.year = 2025\n                group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"name",
+"inn",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"\"Zoket Invest\" OK",
+"983531029",
+2412,
+1465955188298.19
+],
+[
+"\"Fo‘sor Qurilish\" MChJ",
+"975117742",
+1640,
+714626517428.5
+],
+[
+"\"Moto Group\" MChJ",
+"903979966",
+910,
+447438425601.44
+],
+[
+"\"Qasi Invest\" MChJ",
+"908181397",
+767,
+366842711384.52
+],
+[
+"HO‘CHAL GROUP MCHJ",
+"908704393",
+634,
+357324924533.01
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true and d.year = 2025\n                group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"как распределились сделки 2026 года по статусам (исполнены, аннулированы, частично и т.д.)": {
+"text": "99 306 сделок 2026 года по статусам (на 30.10.2026):\n- Исполнен: **76 418** (77,0%)\n- Аннулирован (не оплачен): **6 266** (6,3%)\n- Оплачен: **5 854** (5,9%)\n- Исполнен частично: **4 050** (4,1%)\n- Заключен: **3 954** (4,0%)\n- Ждёт оплату: **1 714** (1,7%)\n- Новый: **964** (1,0%)\n- Не подписан: **86** (0,1%)",
+"sql": [
+"select status, count(*) deals, round(100.0 * count(*) / sum(count(*)) over (), 2) share_pct\n               from deals where year = 2026 group by 1 order by 2 desc"
+],
+"table": {
+"columns": [
+"status",
+"deals",
+"share_pct"
+],
+"rows": [
+[
+"Исполнен",
+76418,
+76.95
+],
+[
+"Аннулирован(Не оплачен)",
+6266,
+6.31
+],
+[
+"Оплачен",
+5854,
+5.89
+],
+[
+"Исполнен(Частично)",
+4050,
+4.08
+],
+[
+"Заключен",
+3954,
+3.98
+],
+[
+"Ждёт оплату",
+1714,
+1.73
+],
+[
+"Новый",
+964,
+0.97
+],
+[
+"Не подписан",
+86,
+0.09
+]
+],
+"row_count": 8,
+"truncated": false,
+"sql": "select status, count(*) deals, round(100.0 * count(*) / sum(count(*)) over (), 2) share_pct\n               from deals where year = 2026 group by 1 order by 2 desc"
+},
+"tables": [
+{
+"columns": [
+"status",
+"deals",
+"share_pct"
+],
+"rows": [
+[
+"Исполнен",
+76418,
+76.95
+],
+[
+"Аннулирован(Не оплачен)",
+6266,
+6.31
+],
+[
+"Оплачен",
+5854,
+5.89
+],
+[
+"Исполнен(Частично)",
+4050,
+4.08
+],
+[
+"Заключен",
+3954,
+3.98
+],
+[
+"Ждёт оплату",
+1714,
+1.73
+],
+[
+"Новый",
+964,
+0.97
+],
+[
+"Не подписан",
+86,
+0.09
+]
+],
+"row_count": 8,
+"truncated": false,
+"sql": "select status, count(*) deals, round(100.0 * count(*) / sum(count(*)) over (), 2) share_pct\n               from deals where year = 2026 group by 1 order by 2 desc"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"сравни количество сделок и оборот по годам": {
+"text": "Количество сделок и оборот по годам:\n- **2022**: 84 299 сделок, оборот **27,97 трлн сум**, аннулировано 6,8%\n- **2023**: 93 985 сделок, оборот **34,19 трлн сум**, аннулировано 6,7%\n- **2024**: 106 647 сделок, оборот **42,72 трлн сум**, аннулировано 6,9%\n- **2025**: 115 763 сделок, оборот **52,06 трлн сум**, аннулировано 7,0%\n- **2026**: 99 306 сделок, оборот **48,80 трлн сум**, аннулировано 6,3%\nОборот рассчитан без аннулированных (неоплаченных) сделок. Данные за 2026 год — по 30 октября.",
+"sql": [
+"select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"как контракты распределены по категориям товаров": {
+"text": "6 616 контрактов по категориям товаров:\n- Сельскохозяйственная продукция: **2 097** (31,7%), товаров: 5\n- Продовольственные товары: **1 462** (22,1%), товаров: 7\n- Строительные материалы: **1 024** (15,5%), товаров: 6\n- Нефтепродукты: **675** (10,2%), товаров: 5\n- Химическая продукция: **416** (6,3%), товаров: 6\n- Металлопродукция: **355** (5,4%), товаров: 5\n- Промышленные товары: **331** (5,0%), товаров: 4\n- Полимерная продукция: **256** (3,9%), товаров: 3",
+"sql": [
+"select category, count(*) contracts, count(distinct product) products\n               from contracts group by 1 order by 2 desc"
+],
+"table": {
+"columns": [
+"category",
+"contracts",
+"products"
+],
+"rows": [
+[
+"Сельскохозяйственная продукция",
+2097,
+5
+],
+[
+"Продовольственные товары",
+1462,
+7
+],
+[
+"Строительные материалы",
+1024,
+6
+],
+[
+"Нефтепродукты",
+675,
+5
+],
+[
+"Химическая продукция",
+416,
+6
+],
+[
+"Металлопродукция",
+355,
+5
+],
+[
+"Промышленные товары",
+331,
+4
+],
+[
+"Полимерная продукция",
+256,
+3
+]
+],
+"row_count": 8,
+"truncated": false,
+"sql": "select category, count(*) contracts, count(distinct product) products\n               from contracts group by 1 order by 2 desc"
+},
+"tables": [
+{
+"columns": [
+"category",
+"contracts",
+"products"
+],
+"rows": [
+[
+"Сельскохозяйственная продукция",
+2097,
+5
+],
+[
+"Продовольственные товары",
+1462,
+7
+],
+[
+"Строительные материалы",
+1024,
+6
+],
+[
+"Нефтепродукты",
+675,
+5
+],
+[
+"Химическая продукция",
+416,
+6
+],
+[
+"Металлопродукция",
+355,
+5
+],
+[
+"Промышленные товары",
+331,
+4
+],
+[
+"Полимерная продукция",
+256,
+3
+]
+],
+"row_count": 8,
+"truncated": false,
+"sql": "select category, count(*) contracts, count(distinct product) products\n               from contracts group by 1 order by 2 desc"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"кто 5 самых активных покупателей по числу сделок": {
+"text": "5 самых активных покупателей по числу сделок (2022–2026):\n1. **\"Zoket Invest\" OK** (ИНН 983531029) — 5,71 трлн сум, 10 150 сделок\n2. **\"Fo‘sor Qurilish\" MChJ** (ИНН 975117742) — 2,87 трлн сум, 7 174 сделок\n3. **\"Moto Group\" MChJ** (ИНН 903979966) — 1,61 трлн сум, 3 763 сделок\n4. **\"Qasi Invest\" MChJ** (ИНН 908181397) — 1,34 трлн сум, 3 267 сделок\n5. **\"ПАФИВЎР ПЛУС\" МЧЖ** (ИНН 994051945) — 1,02 трлн сум, 3 261 сделок\nОборот рассчитан без аннулированных (неоплаченных) сделок.",
+"sql": [
+"select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true \n                group by 1, 2 order by deals desc limit 5"
+],
+"table": {
+"columns": [
+"name",
+"inn",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"\"Zoket Invest\" OK",
+"983531029",
+10150,
+5709800900091.75
+],
+[
+"\"Fo‘sor Qurilish\" MChJ",
+"975117742",
+7174,
+2865066759476.54
+],
+[
+"\"Moto Group\" MChJ",
+"903979966",
+3763,
+1608094950769.94
+],
+[
+"\"Qasi Invest\" MChJ",
+"908181397",
+3267,
+1336664588401.68
+],
+[
+"\"ПАФИВЎР ПЛУС\" МЧЖ",
+"994051945",
+3261,
+1024656383427.57
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true \n                group by 1, 2 order by deals desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"name",
+"inn",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"\"Zoket Invest\" OK",
+"983531029",
+10150,
+5709800900091.75
+],
+[
+"\"Fo‘sor Qurilish\" MChJ",
+"975117742",
+7174,
+2865066759476.54
+],
+[
+"\"Moto Group\" MChJ",
+"903979966",
+3763,
+1608094950769.94
+],
+[
+"\"Qasi Invest\" MChJ",
+"908181397",
+3267,
+1336664588401.68
+],
+[
+"\"ПАФИВЎР ПЛУС\" МЧЖ",
+"994051945",
+3261,
+1024656383427.57
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select c.name, c.inn, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n                from deals d join companies c on c.inn = d.buyer_inn where true \n                group by 1, 2 order by deals desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"топ-5 брокеров покупателя по числу сделок": {
+"text": "Топ-5 брокеров покупателя по числу сделок (2022–2026):\n1. **FIPI BROKER MCHJ** (BK017) — 13 447 сделок, 7,00 трлн сум\n2. **\"Gucham Broker\" MChJ** (BK111) — 11 512 сделок, 5,10 трлн сум\n3. **\"ЗИЗАН БРОКЕР\" МЧЖ** (BK107) — 10 068 сделок, 4,40 трлн сум\n4. **\"Hulun Broker\" AJ** (BK034) — 9 811 сделок, 3,95 трлн сум\n5. **VOQILIR BROKER XK** (BK076) — 8 595 сделок, 4,10 трлн сум",
+"sql": [
+"select b.name, b.broker_code, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n               from deals d join brokers b on b.broker_code = d.buyer_broker group by 1, 2 order by deals desc limit 5"
+],
+"table": {
+"columns": [
+"name",
+"broker_code",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"FIPI BROKER MCHJ",
+"BK017",
+13447,
+6998249698295.41
+],
+[
+"\"Gucham Broker\" MChJ",
+"BK111",
+11512,
+5097321760752.74
+],
+[
+"\"ЗИЗАН БРОКЕР\" МЧЖ",
+"BK107",
+10068,
+4397129140676.81
+],
+[
+"\"Hulun Broker\" AJ",
+"BK034",
+9811,
+3952241984281.22
+],
+[
+"VOQILIR BROKER XK",
+"BK076",
+8595,
+4095473814512.12
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select b.name, b.broker_code, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n               from deals d join brokers b on b.broker_code = d.buyer_broker group by 1, 2 order by deals desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"name",
+"broker_code",
+"deals",
+"turnover_uzs"
+],
+"rows": [
+[
+"FIPI BROKER MCHJ",
+"BK017",
+13447,
+6998249698295.41
+],
+[
+"\"Gucham Broker\" MChJ",
+"BK111",
+11512,
+5097321760752.74
+],
+[
+"\"ЗИЗАН БРОКЕР\" МЧЖ",
+"BK107",
+10068,
+4397129140676.81
+],
+[
+"\"Hulun Broker\" AJ",
+"BK034",
+9811,
+3952241984281.22
+],
+[
+"VOQILIR BROKER XK",
+"BK076",
+8595,
+4095473814512.12
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select b.name, b.broker_code, count(*) deals, sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs\n               from deals d join brokers b on b.broker_code = d.buyer_broker group by 1, 2 order by deals desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"как менялось количество сделок по годам и каковы темпы роста": {
+"text": "Количество сделок по годам и рост к предыдущему году:\n- **2022**: 84 299\n- **2023**: 93 985 (+11,5%)\n- **2024**: 106 647 (+13,5%)\n- **2025**: 115 763 (+8,6%)\n- **2026**: 99 306 (-14,2%)\nСреднегодовой рост за 2022–2025 — **11,2%**. 2026 год неполный (по 30 октября), поэтому снижение связано с незавершённым годом.",
+"sql": [
+"select year, count(*) deals,\n                      round(100.0 * (count(*) - lag(count(*)) over (order by year)) / lag(count(*)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"deals",
+"growth_pct"
+],
+"rows": [
+[
+2022,
+84299,
+null
+],
+[
+2023,
+93985,
+11.49
+],
+[
+2024,
+106647,
+13.47
+],
+[
+2025,
+115763,
+8.55
+],
+[
+2026,
+99306,
+-14.22
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals,\n                      round(100.0 * (count(*) - lag(count(*)) over (order by year)) / lag(count(*)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"deals",
+"growth_pct"
+],
+"rows": [
+[
+2022,
+84299,
+null
+],
+[
+2023,
+93985,
+11.49
+],
+[
+2024,
+106647,
+13.47
+],
+[
+2025,
+115763,
+8.55
+],
+[
+2026,
+99306,
+-14.22
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals,\n                      round(100.0 * (count(*) - lag(count(*)) over (order by year)) / lag(count(*)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"как менялся оборот торгов в сумах по годам": {
+"text": "Оборот торгов в сумах по годам и изменение к предыдущему году:\n- **2022**: 27,97 трлн сум\n- **2023**: 34,19 трлн сум (+22,2%)\n- **2024**: 42,72 трлн сум (+25,0%)\n- **2025**: 52,06 трлн сум (+21,9%)\n- **2026**: 48,80 трлн сум (-6,3%)\nОборот рассчитан без аннулированных (неоплаченных) сделок. Данные за 2026 год — по 30 октября.",
+"sql": [
+"select year, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      round(100.0 * (sum(amount_uzs) filter (where not is_cancelled)\n                            - lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year))\n                            / lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"turnover_uzs",
+"growth_pct"
+],
+"rows": [
+[
+2022,
+27965891730951.84,
+null
+],
+[
+2023,
+34187428452052.48,
+22.25
+],
+[
+2024,
+42724135079483.56,
+24.97
+],
+[
+2025,
+52060836360056.94,
+21.85
+],
+[
+2026,
+48800447257148.93,
+-6.26
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      round(100.0 * (sum(amount_uzs) filter (where not is_cancelled)\n                            - lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year))\n                            / lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"turnover_uzs",
+"growth_pct"
+],
+"rows": [
+[
+2022,
+27965891730951.84,
+null
+],
+[
+2023,
+34187428452052.48,
+22.25
+],
+[
+2024,
+42724135079483.56,
+24.97
+],
+[
+2025,
+52060836360056.94,
+21.85
+],
+[
+2026,
+48800447257148.93,
+-6.26
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                      round(100.0 * (sum(amount_uzs) filter (where not is_cancelled)\n                            - lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year))\n                            / lag(sum(amount_uzs) filter (where not is_cancelled)) over (order by year), 2) growth_pct\n               from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"как менялась доля аннулированных сделок по годам": {
+"text": "Доля аннулированных (не оплаченных в срок) сделок по годам:\n- **2022**: аннулировано 5 732 из 84 299 — **6,8%**\n- **2023**: аннулировано 6 313 из 93 985 — **6,7%**\n- **2024**: аннулировано 7 323 из 106 647 — **6,9%**\n- **2025**: аннулировано 8 085 из 115 763 — **7,0%**\n- **2026**: аннулировано 6 266 из 99 306 — **6,3%**\nДоля стабильна: от 6,3% до 7,0%.",
+"sql": [
+"select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+],
+"table": {
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+},
+"tables": [
+{
+"columns": [
+"year",
+"deals",
+"cancelled",
+"cancelled_pct",
+"turnover_uzs"
+],
+"rows": [
+[
+2022,
+84299,
+5732,
+6.8,
+27965891730951.84
+],
+[
+2023,
+93985,
+6313,
+6.72,
+34187428452052.48
+],
+[
+2024,
+106647,
+7323,
+6.87,
+42724135079483.56
+],
+[
+2025,
+115763,
+8085,
+6.98,
+52060836360056.94
+],
+[
+2026,
+99306,
+6266,
+6.31,
+48800447257148.93
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select year, count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                         round(100.0 * count(*) filter (where is_cancelled) / count(*), 2) cancelled_pct,\n                         sum(amount_uzs) filter (where not is_cancelled) turnover_uzs\n                  from deals group by 1 order by 1"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"основные показатели за 2022 год: число сделок, оборот, доля аннулированных и самый продаваемый товар": {
+"text": "Основные показатели за 2022 год:\n- Сделок: **84 299**\n- Аннулировано: **5 732** (6,8%)\n- Оборот торгов: **27,97 трлн сум**\n- Активных покупателей: 12 536, продавцов: 136\n- Самый продаваемый товар (по обороту): **Хлопок-сырец** — 8,11 трлн сум (23 947 сделок)\nОборот рассчитан без аннулированных (неоплаченных) сделок.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2022",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2022 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+8105560829283.68,
+23947
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+5603480070612.0,
+6379
+],
+[
+"Катод медный",
+"Mis katod",
+2012555440115.33,
+797
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+1957734416206.0,
+2103
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+1430566129791.0,
+4791
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2022 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+84299,
+5732,
+27965891730952.03,
+12536,
+136
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2022"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+8105560829283.68,
+23947
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+5603480070612.0,
+6379
+],
+[
+"Катод медный",
+"Mis katod",
+2012555440115.33,
+797
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+1957734416206.0,
+2103
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+1430566129791.0,
+4791
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2022 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"основные показатели за 2023 год: число сделок, оборот, доля аннулированных и самый продаваемый товар": {
+"text": "Основные показатели за 2023 год:\n- Сделок: **93 985**\n- Аннулировано: **6 313** (6,7%)\n- Оборот торгов: **34,19 трлн сум**\n- Активных покупателей: 12 842, продавцов: 216\n- Самый продаваемый товар (по обороту): **Хлопок-сырец** — 10,28 трлн сум (26 784 сделок)\nОборот рассчитан без аннулированных (неоплаченных) сделок.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2023",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2023 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+10281373290088.24,
+26784
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+6439214811565.0,
+7123
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+2343733253170.0,
+2399
+],
+[
+"Катод медный",
+"Mis katod",
+2251508964416.66,
+841
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+1780563647666.0,
+5290
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2023 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+93985,
+6313,
+34187428452052.39,
+12842,
+216
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2023"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+10281373290088.24,
+26784
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+6439214811565.0,
+7123
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+2343733253170.0,
+2399
+],
+[
+"Катод медный",
+"Mis katod",
+2251508964416.66,
+841
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+1780563647666.0,
+5290
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2023 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"основные показатели за 2024 год: число сделок, оборот, доля аннулированных и самый продаваемый товар": {
+"text": "Основные показатели за 2024 год:\n- Сделок: **106 647**\n- Аннулировано: **7 323** (6,9%)\n- Оборот торгов: **42,72 трлн сум**\n- Активных покупателей: 13 040, продавцов: 278\n- Самый продаваемый товар (по обороту): **Хлопок-сырец** — 12,92 трлн сум (30 037 сделок)\nОборот рассчитан без аннулированных (неоплаченных) сделок.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2024",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2024 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+12915322307345.95,
+30037
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+8129749174135.0,
+8190
+],
+[
+"Катод медный",
+"Mis katod",
+2972321336256.2,
+997
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+2809866592381.0,
+2610
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2081509050779.0,
+6037
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2024 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+106647,
+7323,
+42724135079483.6,
+13040,
+278
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2024"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+12915322307345.95,
+30037
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+8129749174135.0,
+8190
+],
+[
+"Катод медный",
+"Mis katod",
+2972321336256.2,
+997
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+2809866592381.0,
+2610
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2081509050779.0,
+6037
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2024 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"основные показатели за 2025 год: число сделок, оборот, доля аннулированных и самый продаваемый товар": {
+"text": "Основные показатели за 2025 год:\n- Сделок: **115 763**\n- Аннулировано: **8 085** (7,0%)\n- Оборот торгов: **52,06 трлн сум**\n- Активных покупателей: 13 209, продавцов: 319\n- Самый продаваемый товар (по обороту): **Хлопок-сырец** — 16,96 трлн сум (33 056 сделок)\nОборот рассчитан без аннулированных (неоплаченных) сделок.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2025",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+16957079437704.35,
+33056
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9243437724773.0,
+8580
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3464342324683.0,
+2936
+],
+[
+"Катод медный",
+"Mis katod",
+3441760869559.04,
+1037
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2297020654213.0,
+6576
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+115763,
+8085,
+52060836360057.09,
+13209,
+319
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2025"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+16957079437704.35,
+33056
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9243437724773.0,
+8580
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3464342324683.0,
+2936
+],
+[
+"Катод медный",
+"Mis katod",
+3441760869559.04,
+1037
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2297020654213.0,
+6576
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2025 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
+},
+"основные показатели за 2026 год: число сделок, оборот, доля аннулированных и самый продаваемый товар": {
+"text": "Основные показатели за 2026 год:\n- Сделок: **99 306**\n- Аннулировано: **6 266** (6,3%)\n- Оборот торгов: **48,80 трлн сум**\n- Активных покупателей: 12 878, продавцов: 335\n- Самый продаваемый товар (по обороту): **Хлопок-сырец** — 12,77 трлн сум (22 384 сделок)\nОборот рассчитан без аннулированных (неоплаченных) сделок. Данные за 2026 год — по 30 октября.",
+"sql": [
+"select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2026",
+"select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2026 group by 1, 2 order by turnover_uzs desc limit 5"
+],
+"table": {
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+12765884755818.01,
+22384
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9940487491314.0,
+8351
+],
+[
+"Катод медный",
+"Mis katod",
+3805651260866.91,
+1078
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3066985139368.0,
+2444
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2343686150828.0,
+6053
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2026 group by 1, 2 order by turnover_uzs desc limit 5"
+},
+"tables": [
+{
+"columns": [
+"deals",
+"cancelled",
+"turnover_uzs",
+"buyers",
+"sellers"
+],
+"rows": [
+[
+99306,
+6266,
+48800447257149.05,
+12878,
+335
+]
+],
+"row_count": 1,
+"truncated": false,
+"sql": "select count(*) deals, count(*) filter (where is_cancelled) cancelled,\n                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,\n                       count(distinct buyer_inn) buyers, count(distinct seller_inn) sellers\n                from deals where year = 2026"
+},
+{
+"columns": [
+"product",
+"product_uz",
+"turnover_uzs",
+"deals"
+],
+"rows": [
+[
+"Хлопок-сырец",
+"Paxta xomashyosi",
+12765884755818.01,
+22384
+],
+[
+"Пшеница продовольственная",
+"Bug‘doy (oziq-ovqat)",
+9940487491314.0,
+8351
+],
+[
+"Катод медный",
+"Mis katod",
+3805651260866.91,
+1078
+],
+[
+"Масло хлопковое",
+"Paxta yog‘i",
+3066985139368.0,
+2444
+],
+[
+"Дизельное топливо",
+"Dizel yoqilg‘isi",
+2343686150828.0,
+6053
+]
+],
+"row_count": 5,
+"truncated": false,
+"sql": "select product, product_uz, sum(amount_uzs) filter (where not is_cancelled) turnover_uzs, count(*) deals\n                from deals where year = 2026 group by 1, 2 order by turnover_uzs desc limit 5"
+}
+],
+"steps": 1,
+"seconds": 0.0,
+"model": "tayyor SQL"
 }
 }
