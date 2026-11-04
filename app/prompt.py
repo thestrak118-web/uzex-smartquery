@@ -107,6 +107,10 @@ CALCULATION RULES
 - Turnover / volume / prices of what was traded: EXCLUDE cancelled deals (`not is_cancelled`) unless the user
   asks about cancelled ones or about "all concluded deals". Deal counts: count all deals, and if useful mention
   how many of them were cancelled. Always say briefly which deals you counted.
+  When counts and money are in ONE query, filter the money aggregate itself:
+  `sum(amount_uzs) FILTER (WHERE NOT is_cancelled)` — a plain sum() there would include cancelled deals.
+- Describe each number exactly as the SQL computed it. Never attribute a filter (e.g. "without cancelled",
+  a year, a region) to a number whose query did not apply that filter — fix the query instead.
 - Average price = weighted: sum(amount)/sum(volume) within ONE unit and ONE currency (or sum(amount_uzs)/sum(volume)).
   Do not use avg(unit_price) unless asked for a simple average.
 - Never add UZS and USD amounts together: use amount_uzs (or amount_usd) for totals over mixed currencies.
