@@ -154,7 +154,8 @@ def create_app(agent: Agent | None = None) -> FastAPI:
         except Exception as e:
             log.exception("ask failed")
             return JSONResponse(status_code=502, content={
-                "answer": f"AI xizmati xatosi / Ошибка AI-сервиса: {type(e).__name__}",
+                "answer": f"AI xizmati xatosi / Ошибка AI-сервиса: "
+                          f"{e if isinstance(e, RuntimeError) else type(e).__name__}",
                 "status": "error", "language": lang, "conversation_id": cid,
                 "source": None, "visualization": None, "table": None})
         no_data = bool(ans.sql) and all(not t.get("rows") for t in ans.tables)

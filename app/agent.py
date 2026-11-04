@@ -85,7 +85,10 @@ class Answer:
 
 class Agent:
     def __init__(self, api_key: str | None = None, model: str = MODEL):
-        self.client = genai.Client(api_key=api_key or os.environ["GEMINI_API_KEY"])
+        key = api_key or os.getenv("GEMINI_API_KEY")
+        if not key:
+            raise RuntimeError("GEMINI_API_KEY sozlanmagan / не задан (Vercel: Settings → Environment Variables)")
+        self.client = genai.Client(api_key=key)
         self.models = list(dict.fromkeys([model, *FALLBACKS]))
         self.model = model  # oxirgi muvaffaqiyatli model — keyingi savollarda birinchi sinanadi
         self.system = prompt.build()
