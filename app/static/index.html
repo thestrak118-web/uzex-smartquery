@@ -15,25 +15,25 @@
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
-      <a class="brand" href="#top" aria-label="UZEX SmartQuery bosh sahifa">
+      <a class="brand" href="#/overview" aria-label="UZEX SmartQuery bosh sahifa">
         <span class="brand-mark"><i></i><i></i><i></i><i></i></span>
         <span class="brand-copy"><strong>UZEX <b>SmartQuery</b></strong><small>MARKET INTELLIGENCE</small></span>
       </a>
 
       <div class="workspace-label" data-i18n="workspace">ISH MAYDONI</div>
       <nav class="main-nav" aria-label="Asosiy navigatsiya">
-        <a class="nav-link" href="#overview"><span class="nav-icon">▦</span><span data-i18n="overview">Umumiy ko‘rinish</span></a>
-        <a class="nav-link active" href="#assistant"><span class="nav-icon">✳</span><span data-i18n="aiAnalyst">AI tahlilchi</span><span class="nav-pill">AI</span></a>
-        <a class="nav-link" href="#deals"><span class="nav-icon">▤</span><span data-i18n="deals">Bitimlar</span></a>
-        <a class="nav-link" href="#assistant" data-ask="commodities"><span class="nav-icon">◇</span><span data-i18n="commodities">Tovarlar</span></a>
-        <a class="nav-link" href="#assistant" data-ask="participants"><span class="nav-icon">♙</span><span data-i18n="participants">Ishtirokchilar</span></a>
+        <a class="nav-link" href="#/overview" data-route="overview"><span class="nav-icon">▦</span><span data-i18n="overview">Umumiy ko‘rinish</span></a>
+        <a class="nav-link active" href="#/assistant" data-route="assistant"><span class="nav-icon">✳</span><span data-i18n="aiAnalyst">AI tahlilchi</span><span class="nav-pill">AI</span></a>
+        <a class="nav-link" href="#/deals" data-route="deals"><span class="nav-icon">▤</span><span data-i18n="deals">Bitimlar</span></a>
+        <a class="nav-link" href="#/commodities" data-route="commodities"><span class="nav-icon">◇</span><span data-i18n="commodities">Tovarlar</span></a>
+        <a class="nav-link" href="#/participants" data-route="participants"><span class="nav-icon">♙</span><span data-i18n="participants">Ishtirokchilar</span></a>
       </nav>
 
       <div class="sidebar-divider"></div>
       <div class="workspace-label" data-i18n="system">TIZIM</div>
       <nav class="main-nav">
-        <a class="nav-link" href="#sources"><span class="nav-icon">◉</span><span data-i18n="dataSources">Ma’lumotlar manbasi</span></a>
-        <a class="nav-link" href="#settings" id="settingsLink"><span class="nav-icon">⚙</span><span data-i18n="settings">Sozlamalar</span></a>
+        <a class="nav-link" href="#/sources" data-route="sources"><span class="nav-icon">◉</span><span data-i18n="dataSources">Ma’lumotlar manbasi</span></a>
+        <a class="nav-link" href="#/settings" data-route="settings"><span class="nav-icon">⚙</span><span data-i18n="settings">Sozlamalar</span></a>
       </nav>
 
       <div class="sidebar-bottom">
@@ -55,7 +55,7 @@
     <main class="main-content" id="top">
       <header class="topbar">
         <button class="mobile-menu" id="mobileMenu" aria-label="Menyuni ochish">☰</button>
-        <div class="breadcrumbs"><span data-i18n="workspace">ISH MAYDONI</span><b>/</b><strong data-i18n="aiAnalyst">AI tahlilchi</strong></div>
+        <div class="breadcrumbs"><span data-i18n="workspace">ISH MAYDONI</span><b>/</b><strong id="crumb" data-i18n="aiAnalyst">AI tahlilchi</strong></div>
         <div class="topbar-actions">
           <div class="connection-status" id="connStatus"><span class="status-dot"></span><span data-i18n="dataConnected">Ma’lumotlar ulangan</span></div>
           <div class="language-switch" aria-label="Tilni tanlash">
@@ -67,7 +67,7 @@
       </header>
 
       <div class="page-wrap">
-        <section class="page-heading" id="overview">
+        <section class="page-heading" id="overview" data-view="dashboard">
           <div>
             <div class="eyebrow"><span class="eyebrow-line"></span><span data-i18n="exchangeIntelligence">BIRJA INTELLEKTI</span></div>
             <h1 data-i18n="pageTitle">Savollaringizga <em>aniq javoblar.</em></h1>
@@ -80,7 +80,7 @@
           </div>
         </section>
 
-        <section class="metric-grid" aria-label="Dataset statistikasi">
+        <section class="metric-grid" aria-label="Dataset statistikasi" data-view="dashboard">
           <article class="metric-card metric-primary">
             <div class="metric-head"><span data-i18n="totalDeals">Jami bitimlar</span><span class="metric-icon">↗</span></div>
             <div class="metric-number" id="statDeals">500,000</div>
@@ -104,7 +104,7 @@
           </article>
         </section>
 
-        <section class="workspace-grid" id="assistant">
+        <section class="workspace-grid" id="assistant" data-view="dashboard">
           <div class="assistant-panel panel">
             <div class="panel-heading">
               <div class="assistant-title-wrap">
@@ -183,7 +183,7 @@
           </aside>
         </section>
 
-        <section class="panel recent-panel" id="deals">
+        <section class="panel recent-panel" id="recent" data-view="dashboard">
           <div class="recent-heading"><div><div class="eyebrow small-eyebrow" data-i18n="activity">FAOLIYAT</div><h3 data-i18n="recentQueries">So‘nggi so‘rovlar</h3></div><button class="text-button" id="viewAll" data-i18n="viewAll">Barchasini ko‘rish <span>↗</span></button></div>
           <div class="table-wrap">
             <table>
@@ -193,11 +193,123 @@
           </div>
         </section>
 
+
+        <!-- ===== Bitimlar ===== -->
+        <section class="view" data-view="deals" hidden>
+          <div class="page-heading"><div>
+            <div class="eyebrow"><span class="eyebrow-line"></span><span data-i18n="vDealsEyebrow">BITIMLAR REYESTRI</span></div>
+            <h1 data-i18n="vDealsTitle">Bitimlar <em>reyestri.</em></h1>
+            <p data-i18n="vDealsSub">Barcha bitimlarni yil, tovar, viloyat va holat bo‘yicha filtrlang. Qatorni bosing — AI bitimni tushuntiradi.</p>
+          </div></div>
+          <div class="panel view-panel">
+            <div class="filter-bar">
+              <select id="fYear" aria-label="Yil"></select>
+              <select id="fProduct" aria-label="Tovar"></select>
+              <select id="fRegion" aria-label="Viloyat"></select>
+              <select id="fStatus" aria-label="Holat"></select>
+              <input id="fQuery" type="search" data-i18n-placeholder="vDealsSearch" placeholder="Bitim raqami, STIR, kompaniya yoki tovar…">
+              <button type="button" class="ghost-btn" id="fReset" data-i18n="vReset">Tozalash</button>
+            </div>
+            <div class="table-wrap"><table class="data-table">
+              <thead><tr><th data-i18n="vColDeal">№ / SANA</th><th data-i18n="vColProduct">TOVAR</th><th data-i18n="vColRegion">VILOYAT</th><th class="num" data-i18n="vColVolume">HAJM</th><th class="num" data-i18n="vColAmount">SUMMA</th><th class="num" data-i18n="vColPrice">NARX / BIRLIK</th><th data-i18n="vColParties">SOTUVCHI → XARIDOR</th><th data-i18n="vColStatus">HOLAT</th></tr></thead>
+              <tbody id="dealsRows"></tbody>
+            </table></div>
+            <div class="pager"><span id="dealsInfo"></span><div class="pager-buttons"><button type="button" class="ghost-btn" id="dealsPrev">←</button><button type="button" class="ghost-btn" id="dealsNext">→</button></div></div>
+          </div>
+        </section>
+
+        <!-- ===== Tovarlar ===== -->
+        <section class="view" data-view="commodities" hidden>
+          <div class="page-heading"><div>
+            <div class="eyebrow"><span class="eyebrow-line"></span><span data-i18n="vProdEyebrow">TOVARLAR TAHLILI</span></div>
+            <h1 data-i18n="vProdTitle">Tovarlar <em>kesimida.</em></h1>
+            <p data-i18n="vProdSub">230 xil yozuv 41 ta kanonik tovarga keltirilgan. Aylanma bekor qilingan bitimlarsiz hisoblanadi.</p>
+          </div>
+          <div class="heading-tools"><select id="pYear" aria-label="Yil"></select></div></div>
+          <div class="panel view-panel">
+            <div class="table-wrap"><table class="data-table">
+              <thead><tr><th data-i18n="vColProduct">TOVAR</th><th data-i18n="vColCategory">KATEGORIYA</th><th class="num" data-i18n="vColDeals">BITIMLAR</th><th class="num" data-i18n="vColTurnover">AYLANMA, SO‘M</th><th data-i18n="vColShare">ULUSH</th><th class="num" data-i18n="vColTonnes">HAJM, T</th><th class="num" data-i18n="vColAvgPrice">O‘RTACHA NARX</th><th></th></tr></thead>
+              <tbody id="productRows"></tbody>
+            </table></div>
+          </div>
+        </section>
+
+        <!-- ===== Ishtirokchilar ===== -->
+        <section class="view" data-view="participants" hidden>
+          <div class="page-heading"><div>
+            <div class="eyebrow"><span class="eyebrow-line"></span><span data-i18n="vPartEyebrow">ISHTIROKCHILAR</span></div>
+            <h1 data-i18n="vPartTitle">Xaridorlar, sotuvchilar <em>va brokerlar.</em></h1>
+            <p data-i18n="vPartSub">Nom (kirill yoki lotin), STIR yoki broker kodi bo‘yicha qidiring. Qatorni bosing — AI tahlil qiladi.</p>
+          </div></div>
+          <div class="panel view-panel">
+            <div class="filter-bar">
+              <div class="seg-tabs" id="roleTabs">
+                <button type="button" data-role="buyer" class="active" data-i18n="vBuyers">Xaridorlar</button>
+                <button type="button" data-role="seller" data-i18n="vSellers">Sotuvchilar</button>
+                <button type="button" data-role="broker" data-i18n="vBrokers">Brokerlar</button>
+              </div>
+              <select id="partYear" aria-label="Yil"></select>
+              <input id="partQuery" type="search" data-i18n-placeholder="vPartSearch" placeholder="Nomi, STIR yoki broker kodi…">
+            </div>
+            <div class="table-wrap"><table class="data-table">
+              <thead id="partHead"></thead><tbody id="partRows"></tbody>
+            </table></div>
+          </div>
+        </section>
+
+        <!-- ===== Ma'lumotlar manbasi ===== -->
+        <section class="view" data-view="sources" hidden>
+          <div class="page-heading"><div>
+            <div class="eyebrow"><span class="eyebrow-line"></span><span data-i18n="vSrcEyebrow">MA’LUMOTLAR MANBASI</span></div>
+            <h1 data-i18n="vSrcTitle">Dataset <em>va qoidalar.</em></h1>
+            <p data-i18n="vSrcSub">Agent javob beradigan ma’lumotlar, ularning tuzilishi va hisoblash qoidalari.</p>
+          </div></div>
+          <div class="source-grid">
+            <div class="panel view-panel"><div class="small-eyebrow" data-i18n="vSrcFiles">FAYLLAR</div><div id="srcFiles"></div></div>
+            <div class="panel view-panel"><div class="small-eyebrow" data-i18n="vSrcRules">HISOBLASH QOIDALARI</div><ul class="rule-list" id="srcRules"></ul></div>
+          </div>
+          <div class="panel view-panel"><div class="small-eyebrow" data-i18n="vSrcTables">DUCKDB JADVALLARI</div><div id="srcTables"></div></div>
+          <div class="trust-card"><div class="trust-icon">!</div><div><strong data-i18n="vSrcSynthTitle">Sun’iy ma’lumotlar</strong><p data-i18n="vSrcSynth">Barcha kompaniyalar, STIR, brokerlar, narxlar va dollar kursi o‘ylab topilgan. Format tovar-xomashyo birjasining ochiq reyestrini takrorlaydi.</p></div></div>
+        </section>
+
+        <!-- ===== Sozlamalar ===== -->
+        <section class="view" data-view="settings" hidden>
+          <div class="page-heading"><div>
+            <div class="eyebrow"><span class="eyebrow-line"></span><span data-i18n="vSetEyebrow">SOZLAMALAR</span></div>
+            <h1 data-i18n="vSetTitle">Interfeys <em>sozlamalari.</em></h1>
+            <p data-i18n="vSetSub">Sozlamalar shu brauzerda saqlanadi.</p>
+          </div></div>
+          <div class="source-grid">
+            <div class="panel view-panel settings-list">
+              <div class="small-eyebrow" data-i18n="vSetView">JAVOB KO‘RINISHI</div>
+              <label class="setting-row"><span><strong data-i18n="vSetLang">Interfeys tili</strong><small data-i18n="vSetLangNote">AI savol berilgan tilda javob beradi</small></span>
+                <span class="seg-tabs" id="setLang"><button type="button" data-lang="uz">UZ</button><button type="button" data-lang="ru">RU</button></span></label>
+              <label class="setting-row"><span><strong data-i18n="vSetCharts">Grafiklarni ko‘rsatish</strong><small data-i18n="vSetChartsNote">Natija jadvalidan avtomatik grafik</small></span><input type="checkbox" class="switch" data-setting="charts"></label>
+              <label class="setting-row"><span><strong data-i18n="vSetSql">SQL so‘rovlarni ochiq ko‘rsatish</strong><small data-i18n="vSetSqlNote">Har javob ostida SQL darhol ochiladi</small></span><input type="checkbox" class="switch" data-setting="openSql"></label>
+              <label class="setting-row"><span><strong data-i18n="vSetTable">Natija jadvalini ochiq ko‘rsatish</strong><small data-i18n="vSetTableNote">Jadval yig‘ilgan holda emas, ochiq chiqadi</small></span><input type="checkbox" class="switch" data-setting="openTable"></label>
+              <div class="setting-actions">
+                <button type="button" class="ghost-btn" id="setClearHistory" data-i18n="vSetClearHistory">So‘rovlar tarixini tozalash</button>
+                <button type="button" class="ghost-btn" id="setNewChat" data-i18n="vSetNewChat">Yangi suhbat boshlash</button>
+              </div>
+            </div>
+            <div class="panel view-panel settings-list">
+              <div class="small-eyebrow" data-i18n="vSetSystem">TIZIM</div>
+              <div class="setting-row"><span><strong data-i18n="vSetModel">AI model</strong><small data-i18n="vSetModelNote">Band bo‘lsa avtomatik zaxira modelga o‘tadi</small></span><code id="setModel">—</code></div>
+              <div class="setting-row"><span><strong data-i18n="vSetFallbacks">Zaxira modellar</strong></span><span id="setFallbacks" class="chip-list"></span></div>
+              <div class="setting-row"><span><strong data-i18n="vSetData">Ma’lumotlar sanasi</strong></span><code id="setData">—</code></div>
+              <div class="setting-row"><span><strong>API</strong><small>POST /api/v1/ask · GET /api/v1/stats</small></span><a class="text-button" href="/api/docs" target="_blank" rel="noopener">Swagger ↗</a></div>
+              <div class="setting-row"><span><strong>Telegram-bot</strong><small data-i18n="vSetBotNote">Xuddi shu agent Telegram'da</small></span><a class="text-button" href="https://t.me/uzex_ai_hackathon_robot" target="_blank" rel="noopener">@uzex_ai_hackathon_robot ↗</a></div>
+              <div class="setting-row"><span><strong>GitHub</strong></span><a class="text-button" href="https://github.com/thestrak118-web/uzex-smartquery" target="_blank" rel="noopener">uzex-smartquery ↗</a></div>
+            </div>
+          </div>
+        </section>
+
         <footer class="footer"><span>© 2026 UZEX SmartQuery</span><span data-i18n="footerNote">Hackathon prototipi · Sun’iy dataset asosida</span><span class="footer-version" id="footerVersion">GEMINI · DUCKDB</span></footer>
       </div>
     </main>
   </div>
   <div class="toast" id="toast" role="status"></div>
   <script src="app.js"></script>
+  <script src="views.js"></script>
 </body>
 </html>

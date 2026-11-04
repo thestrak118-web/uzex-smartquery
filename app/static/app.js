@@ -70,6 +70,8 @@ function t(key){ return translations[currentLang][key] ?? translations.uz[key] ?
 function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function timeNow(){ return new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}); }
 const fmtInt = n => Number(n).toLocaleString('en-US');
+const DEFAULT_SETTINGS = { charts: true, openSql: false, openTable: false };
+function settings(){ return { ...DEFAULT_SETTINGS, ...store.get('sq_settings', {}) }; }
 
 function fmtNum(v){
   if (typeof v !== 'number') return v === null || v === undefined ? '—' : esc(v);
@@ -175,7 +177,8 @@ function renderAnswer(bubble, data){
   const firstBold = (data.answer || '').match(/\*\*(.+?)\*\*/);
   if (data.status === 'ok' && tbl && tbl.rows && tbl.rows.length === 1 && firstBold && firstBold[1].length <= 40)
     html = `<div class="answer-result"><strong>${esc(firstBold[1])}</strong></div>` + html;
-  if (data.visualization) html += chartHtml(data.visualization);
+  const S = settings();
+  if (data.visualization && S.charts) html += chartHtml(data.visualization);
   const src = data.source;
   if (src) {
     const meta = [src.tables && src.tables.length ? `${t('sourceLabel')}: ${src.tables.join(', ')}` : '',
@@ -183,10 +186,10 @@ function renderAnswer(bubble, data){
     html += `<div class="answer-meta">${meta.map(esc).join(' · ')}</div>`;
     if (src.filters && src.filters.length)
       html += `<div class="answer-filters"><span>${esc(t('filtersLabel'))}:</span>${src.filters.map(f => `<code>${esc(f)}</code>`).join('')}</div>`;
-    html += `<details class="answer-details"><summary>${esc(t('sqlLabel'))} (${src.sql.length})</summary>${src.sql.map(s => `<pre class="sql-block">${esc(s.trim())}</pre>`).join('')}<button type="button" class="text-button copy-sql">⧉ SQL</button></details>`;
+    html += `<details class="answer-details"${S.openSql ? ' open' : ''}><summary>${esc(t('sqlLabel'))} (${src.sql.length})</summary>${src.sql.map(s => `<pre class="sql-block">${esc(s.trim())}</pre>`).join('')}<button type="button" class="text-button copy-sql">⧉ SQL</button></details>`;
   }
   if (tbl && tbl.rows && tbl.rows.length > 1)
-    html += `<details class="answer-details"><summary>${esc(t('tableLabel'))} · ${tbl.rows.length}${tbl.truncated ? '+' : ''} ${esc(t('rowsLabel'))}</summary>${tableHtml(tbl)}</details>`;
+    html += `<details class="answer-details"${S.openTable ? ' open' : ''}><summary>${esc(t('tableLabel'))} · ${tbl.rows.length}${tbl.truncated ? '+' : ''} ${esc(t('rowsLabel'))}</summary>${tableHtml(tbl)}</details>`;
   bubble.innerHTML = html;
   const copy = bubble.querySelector('.copy-sql');
   if (copy) copy.onclick = () => { navigator.clipboard?.writeText(src.sql.join(';\n\n')).then(() => showToast(t('copied'))).catch(() => {}); };
@@ -298,6 +301,7 @@ function applyLanguage(lang){
   document.querySelectorAll('.capability-item, .metric-card').forEach(el => { el.title = t('clickToAsk'); });
   renderRecent();
   renderYears();
+  document.dispatchEvent(new Event('langchange'));
 }
 
 // --- Dashboard: bazadan jonli statistika ---
@@ -380,19 +384,14 @@ document.getElementById('clearChat').addEventListener('click', () => {
 });
 document.getElementById('viewAll').addEventListener('click', () => { recent = []; store.set('sq_recent', recent); renderRecent(); showToast(t('historyCleared')); });
 document.getElementById('helpButton').addEventListener('click', () => showToast(t('helpText'), 6000));
-document.getElementById('settingsLink').addEventListener('click', e => { e.preventDefault(); showToast(t('settingsSoon')); });
-document.querySelectorAll('[data-ask]').forEach(a => a.addEventListener('click', () => {
-  input.value = t(a.dataset.ask === 'commodities' ? 'askCommodities' : 'askParticipants');
-  setTimeout(() => input.focus(), 300);
-}));
 document.getElementById('mobileMenu').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
 document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => {
-  document.querySelectorAll('.main-nav .nav-link').forEach(l => l.classList.toggle('active', l === link));
   if (window.innerWidth <= 760) document.getElementById('sidebar').classList.remove('open');
 }));
 
 function askFromCard(q){
-  document.getElementById('assistant').scrollIntoView({behavior: 'smooth', block: 'start'});
+  if (location.hash !== '#/assistant') location.hash = '#/assistant';
+  setTimeout(() => document.getElementById('assistant').scrollIntoView({behavior: 'smooth', block: 'start'}), 50);
   if (busy) { input.value = q; showToast(t('assistantBusy')); return; }
   sendQuestion(q);
 }

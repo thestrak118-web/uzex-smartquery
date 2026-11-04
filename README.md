@@ -5,7 +5,9 @@ Ikkita interfeysi bor: **Telegram-bot** va **veb-dashboard «UZEX SmartQuery»**
 
 Veb-interfeys (`app/static`, dizayn — `design/uzex-smartquery-ui`): dataset ko‘rsatkichlari va yillik grafik
 bazadan jonli olinadi; har bir javob ostida manba jadvallari, filtrlar, SQL, natija jadvali va avtomatik grafik
-ko‘rsatiladi; so‘nggi so‘rovlar tarixi saqlanadi.
+ko‘rsatiladi; so‘nggi so‘rovlar tarixi saqlanadi. Sidebar sahifalari: **Bitimlar** (filtr, qidiruv, sahifalash),
+**Tovarlar** (aylanma, ulush, o‘rtacha narx), **Ishtirokchilar** (xaridor / sotuvchi / broker reytingi va qidiruv),
+**Ma’lumotlar manbasi** (fayllar, jadvallar, hisoblash qoidalari), **Sozlamalar**. Har qator bosilsa — AI tahlil qiladi.
 
 ## Qanday ishlaydi
 
@@ -59,7 +61,8 @@ Telegram-bot serverless'da polling bilan ishlay olmaydi. Uni Vercel'ga ko‘chir
 
 - `POST /api/v1/ask` — `{"question", "language": "uz|ru", "conversation_id"}` →
   `{"answer", "status": "ok|no_data|busy|error", "language", "conversation_id", "source": {tables, filters, sql, model, steps, seconds}, "visualization": {type, title, labels, values}, "table"}`
-- `GET /api/v1/stats` — dashboard ko‘rsatkichlari, `POST /api/reset` — suhbatni tozalash, `GET /api/docs` — Swagger
+- `GET /api/v1/stats`, `/api/v1/filters`, `/api/v1/deals`, `/api/v1/products`, `/api/v1/participants`, `/api/v1/sources` — sahifalar uchun (parametrli SQL),
+-  `POST /api/reset` — suhbatni tozalash, `GET /api/docs` — Swagger
 
 ## Telegram-bot buyruqlari
 

@@ -152,3 +152,14 @@ def find_entity(text: str, kind: str = "any", limit: int = 10) -> dict:
     for r in out:
         r["score"] = round(r["score"], 3)
     return {"query_key": key, "matches": out[:limit]}
+
+
+def rows(sql: str, params: list | None = None) -> list[dict]:
+    """Ishonchli (bizning) SQL + parametrlar -> dict qatorlar. UI sahifalari uchun."""
+    cur = connect().cursor()
+    try:
+        rel = cur.execute(sql, params or [])
+        cols = [d[0] for d in rel.description]
+        return [dict(zip(cols, [_fmt(v) for v in r])) for r in rel.fetchall()]
+    finally:
+        cur.close()

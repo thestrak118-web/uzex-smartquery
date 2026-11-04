@@ -11,7 +11,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app import db
-from app.agent import MODEL, Agent, AllModelsBusy, Answer
+from app.agent import FALLBACKS, MODEL, Agent, AllModelsBusy, Answer
+from app.normalize import search_key
 
 log = logging.getLogger("web")
 STATIC = Path(__file__).parent / "static"
@@ -120,7 +121,8 @@ def create_app(agent: Agent | None = None) -> FastAPI:
 
     @app.get("/api/health")
     async def health():
-        return {"ok": True, "model": state["agent"].model if state["agent"] else MODEL}
+        return {"ok": True, "model": state["agent"].model if state["agent"] else MODEL,
+                "models": list(dict.fromkeys([MODEL, *FALLBACKS]))}
 
     @app.get("/api/v1/stats")
     async def stats():
@@ -140,6 +142,102 @@ def create_app(agent: Agent | None = None) -> FastAPI:
                         for y, n, tv, c in by_year],
             "model": state["agent"].model if state["agent"] else MODEL,
         }
+
+    # ---- UI sahifalari uchun: faqat oldindan yozilgan, parametrli SQL ----
+    @app.get("/api/v1/filters")
+    async def filters():
+        return {
+            "years": [r["year"] for r in db.rows("select distinct year from deals order by 1")],
+            "products": db.rows("select product, product_uz, count(*) n from deals group by 1, 2 order by 3 desc"),
+            "regions": db.rows("select region, region_key, count(*) n from deals group by 1, 2 order by 1"),
+            "statuses": db.rows("select status, count(*) n from deals group by 1 order by 2 desc"),
+        }
+
+    @app.get("/api/v1/deals")
+    async def deals(year: int | None = None, product: str | None = None, region: str | None = None,
+                    status: str | None = None, q: str | None = None, page: int = 1, size: int = 25):
+        size, page = max(1, min(size, 100)), max(1, page)
+        where, params = [], []
+        for cond, val in (("d.year = ?", year), ("d.product = ?", product),
+                          ("d.region_key = ?", region), ("d.status = ?", status)):
+            if val:
+                where.append(cond)
+                params.append(val)
+        q = (q or "").strip()
+        if q.isdigit() and len(q) == 9:
+            where.append("(d.seller_inn = ? or d.buyer_inn = ?)")
+            params += [q, q]
+        elif q.isdigit():
+            where.append("d.deal_id = ?")
+            params.append(int(q))
+        elif q:
+            key = search_key(q)
+            where.append("(d.product_raw ilike ? or s.name_key like ? or b.name_key like ?)")
+            params += [f"%{q}%", f"%{key}%", f"%{key}%"]
+        base = ("from deals d left join companies s on s.inn = d.seller_inn "
+                "left join companies b on b.inn = d.buyer_inn "
+                + ("where " + " and ".join(where) if where else ""))
+        total = db.rows(f"select count(*) n {base}", params)[0]["n"]
+        data = db.rows(f"""
+            select d.deal_id, d.deal_date, d.deal_time, d.product, d.product_uz, d.product_spec, d.region,
+                   d.volume, d.unit, d.amount, d.currency, d.unit_price, d.start_price, d.status,
+                   d.trade_type, d.contract_form, s.name seller, b.name buyer, d.seller_inn, d.buyer_inn
+            {base} order by d.deal_id desc limit {size} offset {(page - 1) * size}""", params)
+        return {"total": total, "page": page, "size": size, "rows": data}
+
+    @app.get("/api/v1/products")
+    async def products(year: int | None = None):
+        w, p = ("where year = ?", [year]) if year else ("", [])
+        return {"rows": db.rows(f"""
+            select product, product_uz, any_value(category) category,
+                   string_agg(distinct unit, '/' order by unit) units,
+                   count(*) deals, count(*) filter (where is_cancelled) cancelled,
+                   sum(amount_uzs) filter (where not is_cancelled) turnover_uzs,
+                   sum(volume_tonnes) filter (where not is_cancelled) volume_tonnes,
+                   case when count(distinct unit) = 1 then sum(amount_uzs) filter (where not is_cancelled)
+                        / sum(volume) filter (where not is_cancelled) end avg_price_uzs,
+                   case when count(distinct unit) = 1 then any_value(unit) end price_unit
+            from deals {w} group by 1, 2 order by turnover_uzs desc nulls last""", p)}
+
+    @app.get("/api/v1/participants")
+    async def participants(role: str = "buyer", year: int | None = None, q: str | None = None, limit: int = 50):
+        limit = max(1, min(limit, 200))
+        key = search_key(q or "")
+        yw, yp = ("and year = ?", [year]) if year else ("", [])
+        if role == "broker":
+            qw, qp = ("and (br.broker_code = ? or br.name_key like ?)", [(q or "").upper(), f"%{key}%"]) if q else ("", [])
+            data = db.rows(f"""
+                with b as (select seller_broker code, amount_uzs, is_cancelled, 's' side from deals where true {yw}
+                           union all
+                           select buyer_broker, amount_uzs, is_cancelled, 'b' from deals where true {yw})
+                select br.broker_code id, br.name, br.region, count(*) deals,
+                       count(*) filter (where side = 's') seller_side, count(*) filter (where side = 'b') buyer_side,
+                       sum(amount_uzs) filter (where not is_cancelled) turnover_uzs
+                from b join brokers br on br.broker_code = b.code where true {qw}
+                group by all order by deals desc limit {limit}""", yp + yp + qp)
+            return {"role": role, "rows": data}
+        col = "buyer_inn" if role == "buyer" else "seller_inn"
+        qw, qp = ("and (c.inn = ? or c.name_key like ?)", [(q or "").strip(), f"%{key}%"]) if q else ("", [])
+        data = db.rows(f"""
+            select c.inn id, c.name, c.region, c.activity, count(*) deals,
+                   count(distinct d.product) products,
+                   sum(d.amount_uzs) filter (where not d.is_cancelled) turnover_uzs
+            from deals d join companies c on c.inn = d.{col}
+            where true {yw.replace('year', 'd.year')} {qw}
+            group by all order by turnover_uzs desc nulls last limit {limit}""", yp + qp)
+        return {"role": role, "rows": data}
+
+    @app.get("/api/v1/sources")
+    async def sources():
+        tables = []
+        for t in ("deals", "contracts", "companies", "brokers", "usd_rates"):
+            cols = db.rows("select column_name, data_type from information_schema.columns "
+                           "where table_name = ? order by ordinal_position", [t])
+            n = db.rows(f"select count(*) n from {t}")[0]["n"]
+            tables.append({"table": t, "rows": n, "columns": cols})
+        norm = db.rows("""select count(distinct product_raw) raw_names, count(distinct product) products,
+                                 count(distinct product_spec) specs from contracts""")[0]
+        return {"tables": tables, "normalization": norm}
 
     @app.post("/api/v1/ask")
     async def ask_v1(body: AskIn):

@@ -24,9 +24,9 @@ CASES = [
     {"q": "STIR 921912462 bo‘lgan kompaniya jami qancha summaga mahsulot sotgan?",
      "sql": "select sum(amount_uzs) from deals where seller_inn = '921912462' and not is_cancelled"},
     {"q": "Сколько всего экспортных сделок и на какую сумму в долларах (без аннулированных)?",
-     "sql": """select count(*) filter (where contract_type = 'Экспортный'),
-                      sum(amount_usd) filter (where contract_type = 'Экспортный' and not is_cancelled)
-               from deals"""},
+     # "(без аннулированных)" ikkala ko'rsatkichga ham taalluqli
+     "sql": """select count(*), sum(amount_usd) from deals
+               where contract_type = 'Экспортный' and not is_cancelled"""},
     {"q": "2025-yilda necha tonna paxta xomashyosi sotilgan?",
      "sql": """select sum(volume_tonnes) from deals
                where year = 2025 and product = 'Хлопок-сырец' and not is_cancelled"""},
