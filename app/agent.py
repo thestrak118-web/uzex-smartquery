@@ -8,6 +8,8 @@ import logging
 import os
 import re
 import time
+
+import httpx
 from dataclasses import dataclass, field
 from zoneinfo import ZoneInfo
 
@@ -26,6 +28,8 @@ FALLBACKS = [m.strip() for m in os.getenv(
     "gemini-3-flash-preview,gemini-3.6-flash,gemini-3.8-flash,gemini-flash-latest,gemini-3.5-flash-lite",
 ).split(",") if m.strip()]
 TRANSIENT = (404, 429, 500, 502, 503, 504)
+CALL_TIMEOUT_MS = 25_000  # bitta Gemini chaqiruvi
+QUESTION_BUDGET = 70      # bitta savolga jami soniya, keyin «band» xabari
 THINKING = os.getenv("GEMINI_THINKING", "").upper()  # MINIMAL / LOW / MEDIUM / HIGH, bo'sh = model standarti
 MAX_STEPS = 8
 HISTORY_TURNS = 6
@@ -90,7 +94,7 @@ class Agent:
         key = api_key or os.getenv("GEMINI_API_KEY")
         if not key:
             raise RuntimeError("GEMINI_API_KEY sozlanmagan / не задан (Vercel: Settings → Environment Variables)")
-        self.client = genai.Client(api_key=key)
+        self.client = genai.Client(api_key=key, http_options=types.HttpOptions(timeout=CALL_TIMEOUT_MS))
         self.models = list(dict.fromkeys([model, *FALLBACKS]))
         self.model = model  # oxirgi muvaffaqiyatli model — keyingi savollarda birinchi sinanadi
         self.system = prompt.build()
@@ -177,12 +181,19 @@ class Agent:
             self._remember(session, question, ans)
             return ans
         # Model almashsa savol boshidan ishlanadi: Gemini 3 "thought signature"lari boshqa modelga o'tmaydi
+        started = time.time()
         for round_ in range(2):
             now = time.time()
             order = [self.model] + [m for m in self.models if m != self.model]
             for model in [m for m in order if self.cooldown.get(m, 0) <= now]:
+                if time.time() - started > QUESTION_BUDGET:
+                    raise AllModelsBusy()
                 try:
                     ans = await self._ask(model, question, session)
+                except (httpx.TimeoutException, asyncio.TimeoutError) as e:
+                    self.cooldown[model] = time.time() + 30
+                    log.warning("%s javob bermadi (%s), keyingi model", model, type(e).__name__)
+                    continue
                 except errors.APIError as e:
                     if e.code not in TRANSIENT:
                         raise
@@ -203,7 +214,7 @@ class Agent:
                 return ans
             # hammasi band: eng tez bo'shaydigan model 30 s ichida bo'shasa — kutib, yana bir aylanamiz
             soon = min(self.cooldown.get(m, 0) for m in self.models) - time.time()
-            if round_ or soon > 30:
+            if round_ or soon > 30 or time.time() - started + soon > QUESTION_BUDGET:
                 break
             log.warning("barcha modellar band, %.0fs kutamiz", max(soon, 1))
             await asyncio.sleep(max(soon, 1))
