@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 
 from app import db
 from app.agent import FALLBACKS, MODEL, Agent, AllModelsBusy, Answer
-from app.normalize import search_key
+from app.normalize import detect_lang as detect_lang_full, search_key
 
 log = logging.getLogger("web")
 STATIC = Path(__file__).parent / "static"
@@ -34,14 +34,9 @@ class ResetIn(BaseModel):
 
 
 def detect_lang(text: str, hint: str | None) -> str:
-    if re.search(r"[ўқғҳЎҚҒҲ]", text):
-        return "uz"
-    cyr = len(re.findall(r"[А-Яа-яЁё]", text))
-    lat = len(re.findall(r"[A-Za-z]", text))
-    if cyr > lat:
-        return "ru"
-    if lat > cyr:
-        return "uz"
+    lang = detect_lang_full(text)
+    if lang:
+        return "ru" if lang == "ru" else "uz"
     return hint if hint in ("uz", "ru") else "uz"
 
 

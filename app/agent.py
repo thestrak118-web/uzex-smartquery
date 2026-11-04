@@ -15,6 +15,7 @@ from google import genai
 from google.genai import errors, types
 
 from app import db, prompt
+from app.normalize import LANG_NAMES, detect_lang
 
 log = logging.getLogger("agent")
 
@@ -28,6 +29,7 @@ TRANSIENT = (404, 429, 500, 502, 503, 504)
 THINKING = os.getenv("GEMINI_THINKING", "").upper()  # MINIMAL / LOW / MEDIUM / HIGH, bo'sh = model standarti
 MAX_STEPS = 8
 HISTORY_TURNS = 6
+CACHE_SALT = "v2-lang-hint"  # agent mantig'i o'zgarsa — eski kesh yaroqsiz
 
 
 class AllModelsBusy(Exception):
@@ -94,7 +96,7 @@ class Agent:
         self.system = prompt.build()
         self.history: dict[str, list[types.Content]] = {}
         self.cooldown: dict[str, float] = {}  # model -> shu vaqtgacha ishlatilmaydi
-        self.cache_ver = hashlib.sha1(self.system.encode()).hexdigest()[:10]
+        self.cache_ver = hashlib.sha1((CACHE_SALT + self.system).encode()).hexdigest()[:10]
         self.cache_file = db.db_path().with_name("answer_cache.json")
         try:
             self.cache: dict[str, dict] = json.loads(self.cache_file.read_text())
@@ -211,7 +213,10 @@ class Agent:
         t0 = time.time()
         ans = Answer(text="", model=model)
         past = self.history.get(session, [])
-        contents = past + [types.Content(role="user", parts=[types.Part.from_text(text=question)])]
+        # Javob tilini serverda aniqlaymiz: model kirillcha o'zbekchani ruschadan ajratishda adashadi
+        lang = detect_lang(question)
+        hint = f"\n\n[Reply language: {LANG_NAMES[lang]}]" if lang else ""
+        contents = past + [types.Content(role="user", parts=[types.Part.from_text(text=question + hint)])]
 
         for step in range(MAX_STEPS):
             ans.steps = step + 1

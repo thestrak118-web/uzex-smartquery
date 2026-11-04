@@ -209,3 +209,28 @@ def search_key(text: str | None) -> str:
     s = re.sub(r"[^0-9a-z]+", " ", s)
     s = re.sub(_LEGAL, " ", s)
     return re.sub(r"\s+", " ", s).strip()
+
+
+# ---- Savol tilini aniqlash (javob tili uchun) ----
+_UZ_CYR_LETTERS = re.compile(r"[ўқғҳЎҚҒҲ]")
+_UZ_CYR_WORDS = re.compile(
+    r"(?i)\b(нечта|қанча|канча|қайси|кайси|қандай|кандай|йил\w*|битим\w*|вилоят\w*|бўйича|буйича|тузилган|"
+    r"қилинган|килинган|сотилган|ҳақида|хакида|ва|билан|учун|энг|кўп|куп|ўртача|уртача|нарх\w*|бер|айт\w*|"
+    r"компанияси|савдо|харидор\w*|сотувчи\w*|товар\w*лар|нима|салом|ассалому|алайкум|раҳмат|рахмат)\b")
+_RU_WORDS = re.compile(
+    r"(?i)\b(сколько|какой|какая|какие|каков\w*|в|во|на|по|за|и|или|что|как|году|года|годы|сделк\w*|компани[яи]|"
+    r"цен[аы]|покупател\w*|продав\w*|средн\w*|погода|завтра|кто|где|когда|было|были|самый|самая|товар[аов]*)\b")
+
+LANG_NAMES = {"ru": "Russian", "uz-cyrl": "Uzbek (Cyrillic script)", "uz-latn": "Uzbek (Latin script)"}
+
+
+def detect_lang(text: str) -> str | None:
+    """'ru' | 'uz-cyrl' | 'uz-latn' | None. Kirillcha o'zbekcha matnni ruschadan so'zlari bo'yicha ajratadi."""
+    cyr = len(re.findall(r"[А-Яа-яЁёЎўҚқҒғҲҳ]", text))
+    lat = len(re.findall(r"[A-Za-z]", text))
+    if cyr > lat:
+        if _UZ_CYR_LETTERS.search(text):
+            return "uz-cyrl"
+        uz, ru = len(_UZ_CYR_WORDS.findall(text)), len(_RU_WORDS.findall(text))
+        return "uz-cyrl" if uz > ru else "ru"
+    return "uz-latn" if lat else None
