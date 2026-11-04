@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1024" />
+  <meta name="description" content="UZEX SmartQuery — birja bitimlari bo‘yicha ma’lumotlarga asoslangan AI tahlilchi interfeysi." />
+  <title>UZEX SmartQuery — AI Market Analyst</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#top" aria-label="UZEX SmartQuery bosh sahifa">
+        <span class="brand-mark"><i></i><i></i><i></i><i></i></span>
+        <span class="brand-copy"><strong>UZEX <b>SmartQuery</b></strong><small>MARKET INTELLIGENCE</small></span>
+      </a>
+
+      <div class="workspace-label" data-i18n="workspace">ISH MAYDONI</div>
+      <nav class="main-nav" aria-label="Asosiy navigatsiya">
+        <a class="nav-link" href="#overview"><span class="nav-icon">▦</span><span data-i18n="overview">Umumiy ko‘rinish</span></a>
+        <a class="nav-link active" href="#assistant"><span class="nav-icon">✳</span><span data-i18n="aiAnalyst">AI tahlilchi</span><span class="nav-pill">AI</span></a>
+        <a class="nav-link" href="#deals"><span class="nav-icon">▤</span><span data-i18n="deals">Bitimlar</span></a>
+        <a class="nav-link" href="#commodities"><span class="nav-icon">◇</span><span data-i18n="commodities">Tovarlar</span></a>
+        <a class="nav-link" href="#participants"><span class="nav-icon">♙</span><span data-i18n="participants">Ishtirokchilar</span></a>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+      <div class="workspace-label" data-i18n="system">TIZIM</div>
+      <nav class="main-nav">
+        <a class="nav-link" href="#sources"><span class="nav-icon">◉</span><span data-i18n="dataSources">Ma’lumotlar manbasi</span></a>
+        <a class="nav-link" href="#settings"><span class="nav-icon">⚙</span><span data-i18n="settings">Sozlamalar</span></a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="dataset-status">
+          <div class="status-top"><span class="status-dot"></span><span data-i18n="datasetReady">Dataset tayyor</span><span class="status-check">✓</span></div>
+          <strong>500,000</strong>
+          <small data-i18n="dealsLoaded">bitim yozuvi yuklangan</small>
+          <div class="status-progress"><span></span></div>
+          <small class="dataset-period">2022 — 30.10.2026</small>
+        </div>
+        <div class="profile-row">
+          <div class="avatar">SA</div>
+          <div class="profile-copy"><strong>Smart Analyst</strong><small data-i18n="demoWorkspace">Demo workspace</small></div>
+          <button class="dots-button" aria-label="Profil menyusi">•••</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="top">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Menyuni ochish">☰</button>
+        <div class="breadcrumbs"><span data-i18n="workspace">ISH MAYDONI</span><b>/</b><strong data-i18n="aiAnalyst">AI tahlilchi</strong></div>
+        <div class="topbar-actions">
+          <div class="connection-status"><span class="status-dot"></span><span data-i18n="dataConnected">Ma’lumotlar ulangan</span></div>
+          <div class="language-switch" aria-label="Tilni tanlash">
+            <button class="lang-btn active" data-lang="uz">UZ</button>
+            <button class="lang-btn" data-lang="ru">RU</button>
+          </div>
+          <button class="help-button" title="Yordam" aria-label="Yordam">?</button>
+        </div>
+      </header>
+
+      <div class="page-wrap">
+        <section class="page-heading" id="overview">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span><span data-i18n="exchangeIntelligence">BIRJA INTELLEKTI</span></div>
+            <h1 data-i18n="pageTitle">Savollaringizga <em>aniq javoblar.</em></h1>
+            <p data-i18n="pageSubtitle">UZEX bitimlari bo‘yicha ma’lumotlarni tahlil qiling. Savol bering — tekshirilgan natijani oling.</p>
+          </div>
+          <div class="heading-meta">
+            <div class="meta-label" data-i18n="dataSnapshot">MA’LUMOTLAR HOLATI</div>
+            <div class="meta-value"><span class="status-dot"></span>30.10.2026</div>
+            <div class="meta-note" data-i18n="snapshotNote">Datasetning oxirgi sanasi</div>
+          </div>
+        </section>
+
+        <section class="metric-grid" aria-label="Dataset statistikasi">
+          <article class="metric-card metric-primary">
+            <div class="metric-head"><span data-i18n="totalDeals">Jami bitimlar</span><span class="metric-icon">↗</span></div>
+            <div class="metric-number">500,000</div>
+            <div class="metric-foot"><span class="metric-dot green"></span><span data-i18n="fiveYearsData">2022–2026 yillar ma’lumoti</span></div>
+            <div class="metric-spark spark-one"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-head"><span data-i18n="contracts">Shartnomalar</span><span class="metric-icon muted">▤</span></div>
+            <div class="metric-number">6,616</div>
+            <div class="metric-foot"><span data-i18n="contractCards">shartnoma kartochkasi</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-head"><span data-i18n="companies">Ishtirokchilar</span><span class="metric-icon muted">♙</span></div>
+            <div class="metric-number">14,392</div>
+            <div class="metric-foot"><span data-i18n="participantRecords">kompaniya yozuvi</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-head"><span data-i18n="brokers">Brokerlar</span><span class="metric-icon muted">⌘</span></div>
+            <div class="metric-number">120</div>
+            <div class="metric-foot"><span data-i18n="brokerFirms">brokerlik tashkiloti</span></div>
+          </article>
+        </section>
+
+        <section class="workspace-grid" id="assistant">
+          <div class="assistant-panel panel">
+            <div class="panel-heading">
+              <div class="assistant-title-wrap">
+                <div class="ai-orb"><span>✳</span></div>
+                <div><h2 data-i18n="assistantTitle">UZEX AI yordamchi</h2><p><span class="live-dot"></span><span data-i18n="assistantReady">Savollaringizni kutyapti</span></p></div>
+              </div>
+              <div class="panel-heading-actions"><span class="mode-badge"><span></span><span data-i18n="demoMode">DEMO REJIMI</span></span><button class="icon-button" id="clearChat" title="Chatni tozalash" aria-label="Chatni tozalash">↺</button></div>
+            </div>
+
+            <div class="chat-area" id="chatArea" aria-live="polite">
+              <div class="date-divider"><span data-i18n="newConversation">YANGI SUHBAT</span></div>
+              <div class="message assistant-message">
+                <div class="message-avatar">✳</div>
+                <div class="message-body">
+                  <div class="message-author">UZEX AI <span>• <span data-i18n="now">hozir</span></span></div>
+                  <div class="message-bubble welcome-bubble">
+                    <p data-i18n="welcomeText">Assalomu alaykum! Men UZEX birja bitimlari bo‘yicha AI tahlilchiman. Savolingizni o‘zbek yoki rus tilida yozing — ma’lumotlar doirasida javob beraman.</p>
+                    <div class="welcome-note"><span>✦</span><span data-i18n="groundedNote">Javoblar faqat datasetdagi ma’lumotlarga tayanishi kerak.</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="suggestions-block" id="suggestionsBlock">
+                <div class="suggestion-label" data-i18n="tryAsking">QUYIDAGILARDAN BIRINI SO‘RANG</div>
+                <div class="suggestion-list">
+                  <button class="suggestion-chip" data-query="2025-yilda nechta bitim tuzilgan?"><span>↗</span><span data-i18n="suggestion1">2025-yilda nechta bitim tuzilgan?</span></button>
+                  <button class="suggestion-chip" data-query="Yillar bo‘yicha bitimlar sonini taqqosla."><span>▥</span><span data-i18n="suggestion2">Yillar bo‘yicha bitimlarni taqqosla</span></button>
+                  <button class="suggestion-chip" data-query="Datasetda qanday ma’lumotlar mavjud?"><span>⌕</span><span data-i18n="suggestion3">Dataset tarkibini tushuntir</span></button>
+                </div>
+              </div>
+            </div>
+
+            <form class="composer" id="chatForm">
+              <label class="sr-only" for="messageInput" data-i18n="messagePlaceholder">Savolingizni kiriting...</label>
+              <textarea id="messageInput" rows="1" placeholder="Savolingizni kiriting..." data-i18n-placeholder="messagePlaceholder"></textarea>
+              <div class="composer-bottom">
+                <div class="composer-hints"><span class="kbd">↵</span><span data-i18n="sendHint">yuborish</span><span class="hint-divider">·</span><span data-i18n="languageHint">UZ / RU</span></div>
+                <button class="send-button" type="submit"><span data-i18n="send">Yuborish</span><b>↑</b></button>
+              </div>
+            </form>
+            <div class="composer-disclaimer"><span>ⓘ</span><span data-i18n="demoDisclaimer">Demo rejimi: javoblar namuna sifatida ko‘rsatiladi. Haqiqiy AI backend hali ulanmagan.</span></div>
+          </div>
+
+          <aside class="insight-column">
+            <section class="panel chart-panel">
+              <div class="side-panel-heading"><div><div class="eyebrow small-eyebrow" data-i18n="datasetOverview">DATASET TAHLILI</div><h3 data-i18n="dealsByYear">Yillar bo‘yicha bitimlar</h3></div><span class="chart-menu">•••</span></div>
+              <div class="chart-total"><strong>500,000</strong><span data-i18n="allDeals">jami bitim</span></div>
+              <div class="bar-chart" role="img" aria-label="Yillar bo‘yicha bitimlar soni">
+                <div class="chart-y-labels"><span>120k</span><span>90k</span><span>60k</span><span>30k</span><span>0</span></div>
+                <div class="chart-bars">
+                  <div class="chart-grid-lines"><i></i><i></i><i></i><i></i><i></i></div>
+                  <div class="bar-item"><div class="bar-value">84.3k</div><div class="bar" style="--bar-height:70.25%"></div><span>2022</span></div>
+                  <div class="bar-item"><div class="bar-value">94.0k</div><div class="bar" style="--bar-height:78.32%"></div><span>2023</span></div>
+                  <div class="bar-item"><div class="bar-value">106.6k</div><div class="bar" style="--bar-height:88.87%"></div><span>2024</span></div>
+                  <div class="bar-item highlighted"><div class="bar-value">115.8k</div><div class="bar" style="--bar-height:96.47%"></div><span>2025</span></div>
+                  <div class="bar-item partial"><div class="bar-value">99.3k</div><div class="bar" style="--bar-height:82.76%"></div><span>2026*</span></div>
+                </div>
+              </div>
+              <div class="chart-legend"><span><i class="legend-square"></i><span data-i18n="dealCount">Bitimlar soni</span></span><small data-i18n="partialYear">* 2026 — 30-oktabrgacha</small></div>
+            </section>
+
+            <section class="panel capabilities-panel">
+              <div class="side-panel-heading"><div><div class="eyebrow small-eyebrow" data-i18n="agentCapabilities">AGENT IMKONIYATLARI</div><h3 data-i18n="whatCanDo">Nimalarni tahlil qiladi?</h3></div></div>
+              <div class="capability-list">
+                <div class="capability-item"><span class="cap-icon cap-blue">▦</span><div><strong data-i18n="cap1Title">Bitimlar statistikasi</strong><small data-i18n="cap1Desc">Sana, miqdor va savdo hajmi</small></div><span class="cap-arrow">↗</span></div>
+                <div class="capability-item"><span class="cap-icon cap-purple">◇</span><div><strong data-i18n="cap2Title">Tovarlar tahlili</strong><small data-i18n="cap2Desc">Mahsulotlar va narx dinamikasi</small></div><span class="cap-arrow">↗</span></div>
+                <div class="capability-item"><span class="cap-icon cap-orange">♙</span><div><strong data-i18n="cap3Title">Ishtirokchilar</strong><small data-i18n="cap3Desc">Sotuvchi, xaridor va brokerlar</small></div><span class="cap-arrow">↗</span></div>
+                <div class="capability-item"><span class="cap-icon cap-green">◷</span><div><strong data-i18n="cap4Title">Shartnoma holati</strong><small data-i18n="cap4Desc">To‘lov va yetkazib berish</small></div><span class="cap-arrow">↗</span></div>
+              </div>
+            </section>
+
+            <section class="trust-card" id="sources">
+              <div class="trust-icon">✓</div><div><strong data-i18n="trustTitle">Manbaga asoslangan javob</strong><p data-i18n="trustText">Agent mavjud bo‘lmagan ma’lumotni taxmin qilmasligi va javob uchun ishlatilgan filtrlarni ko‘rsatishi kerak.</p></div>
+            </section>
+          </aside>
+        </section>
+
+        <section class="panel recent-panel" id="deals">
+          <div class="recent-heading"><div><div class="eyebrow small-eyebrow" data-i18n="activity">FAOLIYAT</div><h3 data-i18n="recentQueries">So‘nggi so‘rovlar</h3></div><button class="text-button" id="viewAll" data-i18n="viewAll">Barchasini ko‘rish <span>↗</span></button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th data-i18n="question">SAVOL</th><th data-i18n="category">KATEGORIYA</th><th data-i18n="language">TIL</th><th data-i18n="tableStatus">HOLAT</th><th data-i18n="time">VAQT</th></tr></thead>
+              <tbody id="recentRows">
+                <tr><td><span class="table-question">2025-yil bitimlari soni</span></td><td><span class="category-tag">Statistika</span></td><td>UZ</td><td><span class="success-status"><i></i>Demo</span></td><td>21:04</td></tr>
+                <tr><td><span class="table-question">Bitimlar dinamikasi</span></td><td><span class="category-tag">Trend tahlili</span></td><td>UZ</td><td><span class="success-status"><i></i>Demo</span></td><td>20:48</td></tr>
+                <tr><td><span class="table-question">Dataset tarkibi</span></td><td><span class="category-tag">Ma’lumotlar</span></td><td>UZ</td><td><span class="success-status"><i></i>Demo</span></td><td>20:16</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <footer class="footer"><span>© 2026 UZEX SmartQuery</span><span data-i18n="footerNote">Hackathon prototipi · Sun’iy dataset asosida</span><span class="footer-version">UI CONCEPT 1.0</span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

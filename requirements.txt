@@ -1,0 +1,7 @@
+aiogram==3.31.0
+duckdb==2.0.0
+fastapi==0.162.0
+google-genai==2.34.0
+pandas==3.1.1
+python-dotenv==1.2.4
+uvicorn==0.54.0
