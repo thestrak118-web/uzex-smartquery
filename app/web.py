@@ -1,16 +1,17 @@
 """Veb-servis: FastAPI + UZEX SmartQuery interfeysi (app/static)."""
 import logging
+import os
 import re
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app import db
-from app.agent import Agent, AllModelsBusy, Answer
+from app.agent import MODEL, Agent, AllModelsBusy, Answer
 
 log = logging.getLogger("web")
 STATIC = Path(__file__).parent / "static"
@@ -107,12 +108,19 @@ def visualization_of(ans: Answer, lang: str = "uz") -> dict | None:
     return None
 
 
-def create_app(agent: Agent) -> FastAPI:
+def create_app(agent: Agent | None = None) -> FastAPI:
+    """agent berilmasa, birinchi so'rovda yaratiladi (Vercel: import tez, kalit faqat ish vaqtida kerak)."""
     app = FastAPI(title="UZEX SmartQuery — birja bitimlari AI-agenti", docs_url="/api/docs")
+    state = {"agent": agent}
+
+    def get_agent() -> Agent:
+        if state["agent"] is None:
+            state["agent"] = Agent()
+        return state["agent"]
 
     @app.get("/api/health")
     async def health():
-        return {"ok": True, "model": agent.model}
+        return {"ok": True, "model": state["agent"].model if state["agent"] else MODEL}
 
     @app.get("/api/v1/stats")
     async def stats():
@@ -130,7 +138,7 @@ def create_app(agent: Agent) -> FastAPI:
             "first_date": d0.isoformat(), "last_date": d1.isoformat(),
             "by_year": [{"year": y, "deals": n, "turnover_uzs": round(tv), "cancelled_pct": round(c, 2)}
                         for y, n, tv, c in by_year],
-            "model": agent.model,
+            "model": state["agent"].model if state["agent"] else MODEL,
         }
 
     @app.post("/api/v1/ask")
@@ -138,7 +146,7 @@ def create_app(agent: Agent) -> FastAPI:
         cid = body.conversation_id or uuid.uuid4().hex[:16]
         lang = detect_lang(body.question, body.language)
         try:
-            ans = await agent.ask(body.question.strip(), session=f"web:{cid}")
+            ans = await get_agent().ask(body.question.strip(), session=f"web:{cid}")
         except AllModelsBusy as e:
             return JSONResponse(status_code=503, content={
                 "answer": str(e), "status": "busy", "language": lang, "conversation_id": cid,
@@ -163,19 +171,29 @@ def create_app(agent: Agent) -> FastAPI:
     @app.post("/api/reset")
     async def reset(body: ResetIn):
         cid = body.conversation_id or body.session
-        if cid:
-            agent.reset(f"web:{cid}")
+        if cid and state["agent"]:
+            state["agent"].reset(f"web:{cid}")
         return {"ok": True}
 
     # Eski oddiy API (orqaga moslik uchun)
     @app.post("/api/ask")
     async def ask_legacy(body: AskIn):
         try:
-            ans = await agent.ask(body.question.strip(), session=f"web:{body.conversation_id or 'default'}")
+            ans = await get_agent().ask(body.question.strip(), session=f"web:{body.conversation_id or 'default'}")
         except AllModelsBusy as e:
             raise HTTPException(503, str(e))
         return {"answer": ans.text, "sql": ans.sql, "table": ans.table,
                 "steps": ans.steps, "seconds": ans.seconds, "model": ans.model}
+
+    @app.post("/api/telegram/webhook")
+    async def telegram_webhook(request: Request):
+        """Serverless (Vercel) uchun: bot polling o'rniga webhook orqali ishlaydi."""
+        token, secret = os.getenv("TELEGRAM_BOT_TOKEN"), os.getenv("TELEGRAM_WEBHOOK_SECRET")
+        if not token or not secret or request.headers.get("X-Telegram-Bot-Api-Secret-Token") != secret:
+            raise HTTPException(403)
+        from app.bot import feed_webhook
+        await feed_webhook(get_agent(), token, await request.json())
+        return {"ok": True}
 
     app.mount("/", StaticFiles(directory=STATIC, html=True), name="static")
     return app

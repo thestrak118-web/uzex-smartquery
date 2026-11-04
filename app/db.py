@@ -1,7 +1,10 @@
 """DuckDB bilan xavfsiz ishlash: faqat o'qish, fayl tizimiga kirish yopiq, vaqt chegarasi."""
 import datetime as dt
 import decimal
+import logging
+import os
 import re
+import tempfile
 import threading
 from pathlib import Path
 
@@ -9,7 +12,9 @@ import duckdb
 
 from app.normalize import search_key
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data" / "uzex.duckdb"
+log = logging.getLogger("db")
+ROOT = Path(__file__).resolve().parent.parent
+LOCAL_DB = ROOT / "data" / "uzex.duckdb"
 QUERY_TIMEOUT = 20  # soniya
 MAX_ROWS_LLM = 60   # LLM ga qaytariladigan qatorlar
 MAX_ROWS_UI = 500   # veb jadval uchun
@@ -18,13 +23,25 @@ _con: duckdb.DuckDBPyConnection | None = None
 _lock = threading.Lock()
 
 
+def db_path() -> Path:
+    """UZEX_DB > data/uzex.duckdb (lokal) > /tmp/uzex.duckdb (Vercel kabi faqat-o'qish muhit)."""
+    if os.getenv("UZEX_DB"):
+        return Path(os.environ["UZEX_DB"])
+    if LOCAL_DB.exists() or (not os.getenv("VERCEL") and os.access(ROOT, os.W_OK)):
+        return LOCAL_DB
+    return Path(tempfile.gettempdir()) / "uzex.duckdb"
+
+
 def connect() -> duckdb.DuckDBPyConnection:
     global _con
     with _lock:
         if _con is None:
-            if not DB_PATH.exists():
-                raise RuntimeError(f"{DB_PATH} topilmadi — avval `python prepare.py` ni ishga tushiring")
-            con = duckdb.connect(str(DB_PATH), read_only=True)
+            path = db_path()
+            if not path.exists():  # birinchi ishga tushish: dataset zip'idan bazani quramiz
+                import prepare
+                log.info("Baza qurilmoqda: %s", path)
+                prepare.build(path, verbose=False)
+            con = duckdb.connect(str(path), read_only=True)
             con.execute("SET enable_external_access = false")
             con.execute("SET lock_configuration = true")
             _con = con

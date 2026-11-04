@@ -44,6 +44,17 @@ cp .env.example .env                   # GEMINI_API_KEY va TELEGRAM_BOT_TOKEN ni
 .venv/bin/python -m eval.run_eval      # 24 ta test savol, to‘g‘ri javob bilan solishtirish
 ```
 
+## Vercel'ga deploy
+
+1. Vercel'da GitHub repo'ni import qiling (framework: FastAPI, entrypoint — `main.py` dagi `app`).
+2. **Settings → Environment Variables** ga qo‘shing: `GEMINI_API_KEY` (majburiy), ixtiyoriy `GEMINI_MODEL`,
+   `GEMINI_FALLBACKS`. So‘ng **Redeploy** qiling.
+3. Baza alohida yuklanmaydi: birinchi so‘rovda `dataset/uzex_spot_data.zip` dan `/tmp/uzex.duckdb` ga ~2–5 s da quriladi.
+
+Telegram-bot serverless'da polling bilan ishlay olmaydi. Uni Vercel'ga ko‘chirish uchun Vercel'ga
+`TELEGRAM_BOT_TOKEN` va `TELEGRAM_WEBHOOK_SECRET` (istalgan uzun tasodifiy satr) qo‘shing, keyin lokalda:
+`python main.py --set-webhook https://<sizning-domen>.vercel.app`. Lokal polling'ga qaytish: `python main.py --delete-webhook`.
+
 ## API
 
 - `POST /api/v1/ask` — `{"question", "language": "uz|ru", "conversation_id"}` →

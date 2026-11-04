@@ -9,7 +9,6 @@ import os
 import re
 import time
 from dataclasses import dataclass, field
-from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from google import genai
@@ -29,7 +28,6 @@ TRANSIENT = (404, 429, 500, 502, 503, 504)
 THINKING = os.getenv("GEMINI_THINKING", "").upper()  # MINIMAL / LOW / MEDIUM / HIGH, bo'sh = model standarti
 MAX_STEPS = 8
 HISTORY_TURNS = 6
-CACHE_FILE = Path(__file__).resolve().parent.parent / "data" / "answer_cache.json"
 
 
 class AllModelsBusy(Exception):
@@ -94,8 +92,9 @@ class Agent:
         self.history: dict[str, list[types.Content]] = {}
         self.cooldown: dict[str, float] = {}  # model -> shu vaqtgacha ishlatilmaydi
         self.cache_ver = hashlib.sha1(self.system.encode()).hexdigest()[:10]
+        self.cache_file = db.db_path().with_name("answer_cache.json")
         try:
-            self.cache: dict[str, dict] = json.loads(CACHE_FILE.read_text())
+            self.cache: dict[str, dict] = json.loads(self.cache_file.read_text())
         except (OSError, ValueError):
             self.cache = {}
 
@@ -105,7 +104,7 @@ class Agent:
     def _cache_put(self, q: str, ans: "Answer"):
         self.cache[self._cache_key(q)] = dataclasses.asdict(ans)
         try:
-            CACHE_FILE.write_text(json.dumps(self.cache, ensure_ascii=False))
+            self.cache_file.write_text(json.dumps(self.cache, ensure_ascii=False))
         except OSError as e:
             log.warning("kesh saqlanmadi: %s", e)
 

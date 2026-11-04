@@ -1,9 +1,12 @@
-"""CSV -> DuckDB. Bir marta ishga tushiriladi: python prepare.py
+"""CSV -> DuckDB: python prepare.py
 
 Natija: data/uzex.duckdb — inglizcha ustun nomlari, raqam/sana turlari, kanonik tovar nomlari,
 so'm/dollarga o'girilgan summalar va kompaniyalar uchun qidiruv kaliti.
+Vercel kabi serverless muhitda app.db birinchi so'rovda build() ni /tmp ga chaqiradi.
 """
+import csv as csvmod
 import sys
+import tempfile
 import time
 import zipfile
 from pathlib import Path
@@ -27,20 +30,37 @@ def dt(col: str) -> str:
     return f"try_strptime(\"{col}\", '%d.%m.%Y')::date"
 
 
-def main():
-    if not SRC.exists() and ZIP.exists():
-        print(f"{ZIP.name} ochilmoqda...")
-        with zipfile.ZipFile(ZIP) as z:
-            z.extractall(SRC.parent)
-    if not SRC.exists():
-        sys.exit(f"Ma'lumotlar topilmadi: {SRC} (yoki {ZIP})")
+def _rows(con, sql):
+    cur = con.execute(sql)
+    cols = [d[0] for d in cur.description]
+    return [dict(zip(cols, r)) for r in cur.fetchall()]
+
+
+def _write(path: Path, header: list[str], rows: list[list]):
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csvmod.writer(f)
+        w.writerow(header)
+        w.writerows([["" if v is None else v for v in r] for r in rows])
+
+
+def build(db_path: Path = DB, src: Path = SRC, zip_path: Path = ZIP, verbose: bool = True) -> Path:
     t0 = time.time()
-    tmp = DB.with_suffix(".tmp")
+    work = Path(tempfile.mkdtemp(prefix="uzex_"))
+    if not src.exists():
+        if not zip_path.exists():
+            sys.exit(f"Ma'lumotlar topilmadi: {src} (yoki {zip_path})")
+        if verbose:
+            print(f"{zip_path.name} ochilmoqda...")
+        with zipfile.ZipFile(zip_path) as z:
+            z.extractall(work)
+        src = work / "uzex_spot_data"
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = db_path.with_suffix(".tmp")
     tmp.unlink(missing_ok=True)
     con = duckdb.connect(str(tmp))
 
     def csv(name):
-        return f"read_csv('{SRC / name}', all_varchar=true, header=true)"
+        return f"read_csv('{src / name}', all_varchar=true, header=true)"
 
     # --- kurs ---
     con.execute(f"""
@@ -48,78 +68,78 @@ def main():
         select strptime("Дата", '%d.%m.%Y')::date as rate_date, cast("Курс" as double) as rate
         from {csv('usd_rates.csv')} order by 1""")
 
-    # --- shartnomalar ---
-    raw = con.execute(f"select * from {csv('contracts.csv')}").fetchdf()
-    canon = raw["Наименование продукта"].map(canon_product)
-    raw["product"] = canon.map(lambda x: x[0])
-    raw["product_uz"] = canon.map(lambda x: x[1])
-    attrs = raw.apply(lambda r: contract_attrs(r.to_dict()), axis=1, result_type="expand")
-    for c in ["mark", "size", "sort", "type", "class"]:
-        raw["a_" + c] = attrs[c]
-    raw["region_uz"] = raw["Регион"].map(REGION_RU2UZ)
-    if raw["region_uz"].isna().any():
-        sys.exit(f"Noma'lum viloyat: {raw.loc[raw['region_uz'].isna(), 'Регион'].unique()}")
-    raw["region_key"] = raw["region_uz"].map(REGION_KEY)
-    con.register("c_raw", raw)
+    # --- shartnomalar: normallashtirish Python'da, natija vaqtinchalik CSV orqali ---
+    norm = []
+    for r in _rows(con, f"select * from {csv('contracts.csv')}"):
+        ru, uz = canon_product(r["Наименование продукта"])
+        a = contract_attrs(r)
+        region = REGION_RU2UZ.get(r["Регион"])
+        if region is None:
+            sys.exit(f"Noma'lum viloyat: {r['Регион']}")
+        norm.append([r["Номер контракта"], ru, uz, a["mark"], a["size"], a["sort"], a["type"], a["class"],
+                     region, REGION_KEY[region]])
+    _write(work / "c_norm.csv", ["cid", "product", "product_uz", "a_mark", "a_size", "a_sort", "a_type",
+                                 "a_class", "region_uz", "region_key"], norm)
     con.execute(f"""
         create table contracts as select
-            cast("Номер контракта" as bigint) as contract_id,
-            "Наименование продукта" as product_raw,
-            product, product_uz,
-            a_mark as mark, a_size as size, a_sort as sort, a_type as type, a_class as class,
-            concat_ws(', ', product,
-                case when a_mark is not null then 'марка ' || a_mark end,
-                case when a_size is not null then a_size end,
-                case when a_sort = 'высший' then 'высший сорт' when a_sort is not null then a_sort || ' сорт' end,
-                case when a_class is not null and a_class similar to '[1-4]' then a_class || ' класс'
-                     when a_class is not null then 'класс ' || a_class end,
-                a_type) as product_spec,
-            "Код ТН ВЭД" as hs_code,
-            "Группа товара" as product_group,
-            "Категория товара" as category,
-            "Отрасль промышленности" as industry,
-            "Единица измерения" as unit,
-            cast("Лот" as integer) as lot_size,
-            case "Валюта" when 'Доллар США' then 'USD' else 'UZS' end as currency,
+            cast(c."Номер контракта" as bigint) as contract_id,
+            c."Наименование продукта" as product_raw,
+            n.product, n.product_uz,
+            n.a_mark as mark, n.a_size as size, n.a_sort as sort, n.a_type as type, n.a_class as class,
+            concat_ws(', ', n.product,
+                case when n.a_mark is not null then 'марка ' || n.a_mark end,
+                case when n.a_size is not null then n.a_size end,
+                case when n.a_sort = 'высший' then 'высший сорт' when n.a_sort is not null then n.a_sort || ' сорт' end,
+                case when n.a_class is not null and n.a_class similar to '[1-4]' then n.a_class || ' класс'
+                     when n.a_class is not null then 'класс ' || n.a_class end,
+                n.a_type) as product_spec,
+            c."Код ТН ВЭД" as hs_code,
+            c."Группа товара" as product_group,
+            c."Категория товара" as category,
+            c."Отрасль промышленности" as industry,
+            c."Единица измерения" as unit,
+            cast(c."Лот" as integer) as lot_size,
+            case c."Валюта" when 'Доллар США' then 'USD' else 'UZS' end as currency,
             {num('Базисная цена')} as base_price,
-            cast(replace("Сумма залога", ' %', '') as double) as deposit_pct,
-            "Базис поставки" as delivery_basis,
-            "Упаковка" as packaging,
-            region_uz as region, region_key,
-            "Адрес склада" as warehouse_address,
-            "Тип торгов" as trade_type,
-            "Тип контракта" as contract_type,
-            "Форма контракта" as contract_form,
-            cast("Срок оплаты" as integer) as payment_term_days,
-            cast("Срок поставки" as integer) as delivery_term_days,
-            "ИНН продавца" as seller_inn,
+            cast(replace(c."Сумма залога", ' %', '') as double) as deposit_pct,
+            c."Базис поставки" as delivery_basis,
+            c."Упаковка" as packaging,
+            n.region_uz as region, n.region_key,
+            c."Адрес склада" as warehouse_address,
+            c."Тип торгов" as trade_type,
+            c."Тип контракта" as contract_type,
+            c."Форма контракта" as contract_form,
+            cast(c."Срок оплаты" as integer) as payment_term_days,
+            cast(c."Срок поставки" as integer) as delivery_term_days,
+            c."ИНН продавца" as seller_inn,
             {dt('Дата регистрации')} as reg_date,
             {dt('Действует до')} as valid_until
-        from c_raw""")
-    con.unregister("c_raw")
+        from {csv('contracts.csv')} c
+        join read_csv('{work / "c_norm.csv"}', all_varchar=true, header=true) n on n.cid = c."Номер контракта"
+        order by contract_id""")
 
     # --- kompaniyalar va brokerlar ---
-    parts = con.execute(f"select * from {csv('participants.csv')}").fetchdf()
-    parts["name_key"] = parts["Наименование"].map(search_key)
-    parts["region_key"] = parts["Регион"].map(REGION_KEY)
-    con.register("p_raw", parts)
-    con.execute("""
+    parts = _rows(con, f'select "ИНН", "Наименование", "Регион" from {csv("participants.csv")}')
+    _write(work / "p_norm.csv", ["inn", "name_key", "region_key"],
+           [[r["ИНН"], search_key(r["Наименование"]), REGION_KEY.get(r["Регион"])] for r in parts])
+    con.execute(f"""
         create table companies as select
-            "ИНН" as inn, "Наименование" as name, name_key, "Регион" as region, region_key,
-            "Вид деятельности" as activity, "Роль" as role, "Плательщик НДС" = 'Да' as vat_payer
-        from p_raw""")
-    con.unregister("p_raw")
+            p."ИНН" as inn, p."Наименование" as name, n.name_key, p."Регион" as region, n.region_key,
+            p."Вид деятельности" as activity, p."Роль" as role, p."Плательщик НДС" = 'Да' as vat_payer
+        from {csv('participants.csv')} p
+        join read_csv('{work / "p_norm.csv"}', all_varchar=true, header=true) n on n.inn = p."ИНН"
+        order by inn""")
 
-    brk = con.execute(f"select * from {csv('brokers.csv')}").fetchdf()
-    brk["name_key"] = brk["Наименование"].map(search_key)
-    brk["region_key"] = brk["Регион"].map(REGION_KEY)
-    con.register("b_raw", brk)
-    con.execute("""
+    brk = _rows(con, f'select "Код брокера", "Наименование", "Регион" from {csv("brokers.csv")}')
+    _write(work / "b_norm.csv", ["code", "name_key", "region_key"],
+           [[r["Код брокера"], search_key(r["Наименование"]), REGION_KEY.get(r["Регион"])] for r in brk])
+    con.execute(f"""
         create table brokers as select
-            "Код брокера" as broker_code, "Наименование" as name, name_key, "ИНН" as inn,
-            "Регион" as region, region_key
-        from b_raw""")
-    con.unregister("b_raw")
+            b."Код брокера" as broker_code, b."Наименование" as name, n.name_key, b."ИНН" as inn,
+            b."Регион" as region, n.region_key
+        from {csv('brokers.csv')} b
+        join read_csv('{work / "b_norm.csv"}', all_varchar=true, header=true) n on n.code = b."Код брокера"
+        order by broker_code""")
 
     # --- bitimlar ---
     con.execute(f"""
@@ -176,17 +196,23 @@ def main():
     bad_region = con.execute("""select count(*) from deals d join contracts c using(contract_id)
                                 where d.region <> c.region""").fetchone()[0]
     nulls = con.execute("select count(*) from deals where amount is null or deal_date is null or usd_rate is null").fetchone()[0]
-    print(f"deals={n}, region mos kelmagan={bad_region}, bo'sh qiymat={nulls}")
-    print(con.execute("select product, count(*) from contracts group by 1 order by 2 desc").fetchall())
+    if verbose:
+        print(f"deals={n}, region mos kelmagan={bad_region}, bo'sh qiymat={nulls}")
+        print(con.execute("select product, count(*) from contracts group by 1 order by 2 desc").fetchall())
 
     for t, cols in {"deals": ["deal_date", "product", "seller_inn", "buyer_inn", "contract_id"],
                     "companies": ["inn"], "contracts": ["contract_id"]}.items():
         for c in cols:
             con.execute(f"create index idx_{t}_{c} on {t}({c})")
     con.close()
-    tmp.replace(DB)
-    print(f"Tayyor: {DB} ({DB.stat().st_size / 1e6:.0f} MB, {time.time() - t0:.1f} s)")
+    tmp.replace(db_path)
+    for f in sorted(work.rglob("*"), reverse=True):
+        f.unlink() if f.is_file() else f.rmdir()
+    work.rmdir()
+    if verbose:
+        print(f"Tayyor: {db_path} ({db_path.stat().st_size / 1e6:.0f} MB, {time.time() - t0:.1f} s)")
+    return db_path
 
 
 if __name__ == "__main__":
-    main()
+    build()

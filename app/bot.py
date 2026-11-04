@@ -161,3 +161,15 @@ async def run_bot(agent: Agent, token: str):
     me = await bot.get_me()
     log.info("Telegram-bot ishga tushdi: @%s", me.username)
     await build_dispatcher(agent).start_polling(bot, handle_signals=False)
+
+
+_webhook: tuple[Bot, Dispatcher] | None = None
+
+
+async def feed_webhook(agent: Agent, token: str, update: dict):
+    """Vercel'dagi /api/telegram/webhook uchun: bitta update'ni qayta ishlaydi."""
+    global _webhook
+    if _webhook is None:
+        _webhook = (Bot(token, default=DefaultBotProperties(parse_mode=ParseMode.HTML)), build_dispatcher(agent))
+    bot, dp = _webhook
+    await dp.feed_webhook_update(bot, update)

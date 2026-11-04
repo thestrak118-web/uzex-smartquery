@@ -17,6 +17,11 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
+from app.web import create_app  # noqa: E402
+
+# Vercel / har qanday ASGI server uchun: `uvicorn main:app`. Agent birinchi so'rovda yaratiladi.
+app = create_app()
+
 
 async def run(args):
     from app.agent import Agent
@@ -25,7 +30,6 @@ async def run(args):
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     if not args.bot:
         import uvicorn
-        from app.web import create_app
         host, port = os.getenv("WEB_HOST", "0.0.0.0"), int(os.getenv("WEB_PORT", "8000"))
         server = uvicorn.Server(uvicorn.Config(create_app(agent), host=host, port=port, log_level="info"))
         logging.info("Veb: http://localhost:%s", port)
@@ -50,6 +54,23 @@ async def ask_once(q: str):
         print("SQL:", s)
 
 
+async def webhook_cmd(base_url: str | None):
+    from aiogram import Bot
+    bot = Bot(os.environ["TELEGRAM_BOT_TOKEN"])
+    try:
+        if base_url:
+            secret = os.environ["TELEGRAM_WEBHOOK_SECRET"]
+            url = base_url.rstrip("/") + "/api/telegram/webhook"
+            await bot.set_webhook(url, secret_token=secret, drop_pending_updates=True)
+            print("Webhook o'rnatildi:", url)
+        else:
+            await bot.delete_webhook()
+            print("Webhook o'chirildi — endi lokal polling ishlaydi")
+        print(await bot.get_webhook_info())
+    finally:
+        await bot.session.close()
+
+
 def list_models():
     from google import genai
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
@@ -65,9 +86,13 @@ if __name__ == "__main__":
     g.add_argument("--bot", action="store_true")
     g.add_argument("--ask")
     g.add_argument("--models", action="store_true")
+    g.add_argument("--set-webhook", metavar="BASE_URL", help="botni Vercel webhook'iga ulash")
+    g.add_argument("--delete-webhook", action="store_true", help="webhook'ni o'chirish (lokal polling uchun)")
     a = p.parse_args()
     if a.models:
         list_models()
+    elif a.set_webhook or a.delete_webhook:
+        asyncio.run(webhook_cmd(a.set_webhook))
     elif a.ask:
         asyncio.run(ask_once(a.ask))
     else:
