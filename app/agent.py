@@ -141,22 +141,16 @@ class Agent:
         return min(float(m.group(1)) + 1, 45) if m else 20
 
     async def _generate(self, model, contents, tools=True):
-        delay = 2
-        for attempt in range(4):
+        # Kutib o'tirmaymiz: band (5xx) bo'lsa bir marta qisqa qayta urinish, 429 — darhol boshqa modelga
+        for attempt in range(2):
             try:
                 return await self.client.aio.models.generate_content(
                     model=model, contents=contents, config=self._config(tools))
             except errors.APIError as e:
-                if attempt == 3 or e.code not in (429, 500, 502, 503, 504):
+                if attempt == 1 or e.code not in (500, 502, 503, 504):
                     raise
-                if e.code == 429:
-                    wait = self._quota_wait(e)
-                    if wait is None:  # kunlik limit — boshqa modelga o'tamiz
-                        raise
-                else:
-                    wait, delay = delay, delay * 2
-                log.warning("%s: %s, %.0fs dan keyin qayta urinish", model, e.code, wait)
-                await asyncio.sleep(wait)
+                log.warning("%s: %s, qayta urinish", model, e.code)
+                await asyncio.sleep(1.5)
 
     def _run_tool(self, name: str, args: dict, ans: Answer) -> dict:
         if name == "run_sql":
@@ -181,28 +175,36 @@ class Agent:
             self._remember(session, question, ans)
             return ans
         # Model almashsa savol boshidan ishlanadi: Gemini 3 "thought signature"lari boshqa modelga o'tmaydi
-        now = time.time()
-        order = [self.model] + [m for m in self.models if m != self.model]
-        order = [m for m in order if self.cooldown.get(m, 0) <= now]
-        for model in order:
-            try:
-                ans = await self._ask(model, question, session)
-            except errors.APIError as e:
-                if e.code not in TRANSIENT:
-                    raise
-                if e.code == 404:
-                    self.cooldown[model] = now + 86400
-                elif e.code == 429 and self._quota_wait(e) is None:
-                    self.cooldown[model] = _quota_reset()
-                else:
-                    self.cooldown[model] = now + 60
-                log.warning("%s ishlamadi (%s), keyingi model", model, e.code)
-                continue
-            self.model = model
-            if not self.history.get(session) and not ans.text.startswith("Kechirasiz"):
-                self._cache_put(question, ans)
-            self._remember(session, question, ans)
-            return ans
+        for round_ in range(2):
+            now = time.time()
+            order = [self.model] + [m for m in self.models if m != self.model]
+            for model in [m for m in order if self.cooldown.get(m, 0) <= now]:
+                try:
+                    ans = await self._ask(model, question, session)
+                except errors.APIError as e:
+                    if e.code not in TRANSIENT:
+                        raise
+                    t = time.time()
+                    if e.code == 404:
+                        self.cooldown[model] = t + 86400
+                    elif e.code == 429:
+                        wait = self._quota_wait(e)
+                        self.cooldown[model] = _quota_reset() if wait is None else t + wait
+                    else:
+                        self.cooldown[model] = t + 20
+                    log.warning("%s ishlamadi (%s), keyingi model", model, e.code)
+                    continue
+                self.model = model
+                if not self.history.get(session) and not ans.text.startswith("Kechirasiz"):
+                    self._cache_put(question, ans)
+                self._remember(session, question, ans)
+                return ans
+            # hammasi band: eng tez bo'shaydigan model 30 s ichida bo'shasa — kutib, yana bir aylanamiz
+            soon = min(self.cooldown.get(m, 0) for m in self.models) - time.time()
+            if round_ or soon > 30:
+                break
+            log.warning("barcha modellar band, %.0fs kutamiz", max(soon, 1))
+            await asyncio.sleep(max(soon, 1))
         raise AllModelsBusy()
 
     async def _ask(self, model: str, question: str, session: str) -> Answer:
