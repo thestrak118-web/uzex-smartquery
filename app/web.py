@@ -5,7 +5,7 @@ import re
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -104,6 +104,9 @@ def visualization_of(ans: Answer, lang: str = "uz") -> dict | None:
     return None
 
 
+YearQ = Query(None, ge=1900, le=2100)
+
+
 def create_app(agent: Agent | None = None) -> FastAPI:
     """agent berilmasa, birinchi so'rovda yaratiladi (Vercel: import tez, kalit faqat ish vaqtida kerak)."""
     app = FastAPI(title="UZEX SmartQuery — birja bitimlari AI-agenti", docs_url="/api/docs")
@@ -149,9 +152,10 @@ def create_app(agent: Agent | None = None) -> FastAPI:
         }
 
     @app.get("/api/v1/deals")
-    async def deals(year: int | None = None, product: str | None = None, region: str | None = None,
-                    status: str | None = None, q: str | None = None, page: int = 1, size: int = 25):
-        size, page = max(1, min(size, 100)), max(1, page)
+    async def deals(year: int | None = YearQ, product: str | None = Query(None, max_length=200),
+                    region: str | None = Query(None, max_length=50), status: str | None = Query(None, max_length=50),
+                    q: str | None = Query(None, max_length=200), page: int = 1, size: int = 25):
+        size, page = max(1, min(size, 100)), max(1, min(page, 100_000))  # juda katta page offset'ni to'ldirib yubormasin
         where, params = [], []
         for cond, val in (("d.year = ?", year), ("d.product = ?", product),
                           ("d.region_key = ?", region), ("d.status = ?", status)):
@@ -167,8 +171,12 @@ def create_app(agent: Agent | None = None) -> FastAPI:
             params.append(int(q))
         elif q:
             key = search_key(q)
-            where.append("(d.product_raw ilike ? or s.name_key like ? or b.name_key like ?)")
-            params += [f"%{q}%", f"%{key}%", f"%{key}%"]
+            if key:  # faqat tinish belgilaridan iborat so'rov bo'sh kalit beradi — u hamma narsaga mos kelmasin
+                where.append("(d.product_raw ilike ? or s.name_key like ? or b.name_key like ?)")
+                params += [f"%{q}%", f"%{key}%", f"%{key}%"]
+            else:
+                where.append("d.product_raw ilike ?")
+                params.append(f"%{q}%")
         base = ("from deals d left join companies s on s.inn = d.seller_inn "
                 "left join companies b on b.inn = d.buyer_inn "
                 + ("where " + " and ".join(where) if where else ""))
@@ -181,7 +189,7 @@ def create_app(agent: Agent | None = None) -> FastAPI:
         return {"total": total, "page": page, "size": size, "rows": data}
 
     @app.get("/api/v1/products")
-    async def products(year: int | None = None):
+    async def products(year: int | None = YearQ):
         w, p = ("where year = ?", [year]) if year else ("", [])
         return {"rows": db.rows(f"""
             select product, product_uz, any_value(category) category,
@@ -195,12 +203,14 @@ def create_app(agent: Agent | None = None) -> FastAPI:
             from deals {w} group by 1, 2 order by turnover_uzs desc nulls last""", p)}
 
     @app.get("/api/v1/participants")
-    async def participants(role: str = "buyer", year: int | None = None, q: str | None = None, limit: int = 50):
+    async def participants(role: str = "buyer", year: int | None = YearQ, q: str | None = Query(None, max_length=200),
+                           limit: int = 50):
         limit = max(1, min(limit, 200))
         key = search_key(q or "")
         yw, yp = ("and year = ?", [year]) if year else ("", [])
         if role == "broker":
-            qw, qp = ("and (br.broker_code = ? or br.name_key like ?)", [(q or "").upper(), f"%{key}%"]) if q else ("", [])
+            qw, qp = ("and (br.broker_code = ? or (? <> '' and br.name_key like ?))",
+                      [(q or "").strip().upper(), key, f"%{key}%"]) if q else ("", [])
             data = db.rows(f"""
                 with b as (select seller_broker code, amount_uzs, is_cancelled, 's' side from deals where true {yw}
                            union all
@@ -212,7 +222,7 @@ def create_app(agent: Agent | None = None) -> FastAPI:
                 group by all order by deals desc limit {limit}""", yp + yp + qp)
             return {"role": role, "rows": data}
         col = "buyer_inn" if role == "buyer" else "seller_inn"
-        qw, qp = ("and (c.inn = ? or c.name_key like ?)", [(q or "").strip(), f"%{key}%"]) if q else ("", [])
+        qw, qp = ("and (c.inn = ? or (? <> '' and c.name_key like ?))", [(q or "").strip(), key, f"%{key}%"]) if q else ("", [])
         data = db.rows(f"""
             select c.inn id, c.name, c.region, c.activity, count(*) deals,
                    count(distinct d.product) products,

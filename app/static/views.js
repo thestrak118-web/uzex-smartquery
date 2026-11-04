@@ -108,13 +108,16 @@ async function viewDeals(){
   fillSelect(fStatus, t('vAllStatuses'), filterData.statuses.map(s => [s.status, statusName(s.status)]));
   loadDeals();
 }
+let dealsSeq = 0, partSeq = 0;  // eskirgan (kech kelgan) javob yangisining ustiga yozilmasin
 async function loadDeals(){
   const body = document.getElementById('dealsRows');
+  const my = ++dealsSeq;
   body.innerHTML = loadingRow(8);
   let d;
   try {
     d = await api('/api/v1/deals', { year: fYear.value, product: fProduct.value, region: fRegion.value, status: fStatus.value, q: fQuery.value.trim(), page: dealsState.page, size: dealsState.size });
-  } catch { body.innerHTML = emptyRow(8); return; }
+  } catch { if (my === dealsSeq) body.innerHTML = emptyRow(8); return; }
+  if (my !== dealsSeq) return;
   body.innerHTML = d.rows.length ? d.rows.map(r => `
     <tr class="click-row" data-deal="${r.deal_id}">
       <td><strong>${r.deal_id}</strong><small>${fmtDate(r.deal_date)} · ${esc((r.deal_time || '').slice(0, 5))}</small></td>
@@ -181,9 +184,11 @@ async function loadParticipants(){
   const broker = partRole === 'broker';
   head.innerHTML = `<tr><th>#</th><th>${esc(t('vColName'))}</th><th>${esc(t('vColId'))}</th><th>${esc(t('vColRegion'))}</th><th>${esc(t(broker ? 'vColSides' : 'vColActivity'))}</th><th class="num">${esc(t('vColDeals'))}</th>${broker ? '' : `<th class="num">${esc(t('vColProducts'))}</th>`}<th class="num">${esc(t('vColTurnover'))}</th></tr>`;
   const cols = broker ? 7 : 8;
+  const my = ++partSeq;
   body.innerHTML = loadingRow(cols);
   let d;
-  try { d = await api('/api/v1/participants', { role: partRole, year: partYear.value, q: partQuery.value.trim(), limit: 50 }); } catch { body.innerHTML = emptyRow(cols); return; }
+  try { d = await api('/api/v1/participants', { role: partRole, year: partYear.value, q: partQuery.value.trim(), limit: 50 }); } catch { if (my === partSeq) body.innerHTML = emptyRow(cols); return; }
+  if (my !== partSeq) return;
   body.innerHTML = d.rows.map((r, i) => `<tr class="click-row" data-id="${esc(r.id)}">
       <td>${i + 1}</td>
       <td><span class="cell-main">${esc(r.name)}</span></td>

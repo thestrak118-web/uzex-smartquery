@@ -154,7 +154,7 @@ function tableHtml(tbl){
   if (!tbl || !tbl.columns || !tbl.columns.length || !tbl.rows.length) return '';
   const head = tbl.columns.map(c => `<th>${prettyCol(c)}</th>`).join('');
   const body = tbl.rows.map(r => '<tr>' + r.map((v, i) => `<td class="${typeof v === 'number' ? 'num' : ''}">${fmtCell(v, tbl.columns[i])}</td>`).join('') + '</tr>').join('');
-  return `<div class="result-table"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  return `<div class="result-table" tabindex="0"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
 // --- Xabarlar ---
@@ -186,7 +186,7 @@ function renderAnswer(bubble, data){
     html += `<div class="answer-meta">${meta.map(esc).join(' · ')}</div>`;
     if (src.filters && src.filters.length)
       html += `<div class="answer-filters"><span>${esc(t('filtersLabel'))}:</span>${src.filters.map(f => typeof f === 'string' || f.code ? `<code>${esc(f.text ?? f)}</code>` : `<span class="filter-chip">${esc(f.text)}</span>`).join('')}</div>`;
-    html += `<details class="answer-details"${S.openSql ? ' open' : ''}><summary>${esc(t('sqlLabel'))} (${src.sql.length})</summary>${src.sql.map(s => `<pre class="sql-block">${esc(s.trim())}</pre>`).join('')}<button type="button" class="text-button copy-sql">⧉ SQL</button></details>`;
+    html += `<details class="answer-details"${S.openSql ? ' open' : ''}><summary>${esc(t('sqlLabel'))} (${src.sql.length})</summary>${src.sql.map(s => `<pre class="sql-block" tabindex="0">${esc(s.trim())}</pre>`).join('')}<button type="button" class="text-button copy-sql">⧉ SQL</button></details>`;
   }
   if (tbl && tbl.rows && tbl.rows.length > 1)
     html += `<details class="answer-details"${S.openTable ? ' open' : ''}><summary>${esc(t('tableLabel'))} · ${tbl.rows.length}${tbl.truncated ? '+' : ''} ${esc(t('rowsLabel'))}</summary>${tableHtml(tbl)}</details>`;

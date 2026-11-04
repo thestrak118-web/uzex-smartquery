@@ -114,7 +114,7 @@
               <div class="panel-heading-actions"><span class="mode-badge" id="modeBadge" title=""><span></span><span data-i18n="liveMode">JONLI REJIM</span></span><button class="icon-button" id="clearChat" title="Chatni tozalash" aria-label="Chatni tozalash">↺</button></div>
             </div>
 
-            <div class="chat-area" id="chatArea" aria-live="polite">
+            <div class="chat-area" id="chatArea" aria-live="polite" tabindex="0">
               <div class="date-divider"><span data-i18n="newConversation">YANGI SUHBAT</span></div>
               <div class="message assistant-message">
                 <div class="message-avatar">✳</div>
@@ -153,7 +153,7 @@
             <section class="panel chart-panel">
               <div class="side-panel-heading"><div><div class="eyebrow small-eyebrow" data-i18n="datasetOverview">DATASET TAHLILI</div><h3 data-i18n="dealsByYear">Yillar bo‘yicha bitimlar</h3></div><span class="chart-menu">•••</span></div>
               <div class="chart-total"><strong id="chartTotal">500,000</strong><span data-i18n="allDeals">jami bitim</span></div>
-              <div class="bar-chart" role="img" aria-label="Yillar bo‘yicha bitimlar soni">
+              <div class="bar-chart" role="group" aria-label="Yillar bo‘yicha bitimlar soni">
                 <div class="chart-y-labels" id="yearAxis"><span>120k</span><span>90k</span><span>60k</span><span>30k</span><span>0</span></div>
                 <div class="chart-bars" id="yearBars">
                   <div class="chart-grid-lines"><i></i><i></i><i></i><i></i><i></i></div>
@@ -185,7 +185,7 @@
 
         <section class="panel recent-panel" id="recent" data-view="dashboard">
           <div class="recent-heading"><div><div class="eyebrow small-eyebrow" data-i18n="activity">FAOLIYAT</div><h3 data-i18n="recentQueries">So‘nggi so‘rovlar</h3></div><button class="text-button" id="viewAll" data-i18n="viewAll">Barchasini ko‘rish <span>↗</span></button></div>
-          <div class="table-wrap">
+          <div class="table-wrap" tabindex="0">
             <table>
               <thead><tr><th data-i18n="question">SAVOL</th><th data-i18n="category">KATEGORIYA</th><th data-i18n="language">TIL</th><th data-i18n="tableStatus">HOLAT</th><th data-i18n="time">VAQT</th></tr></thead>
               <tbody id="recentRows"><tr class="empty-row"><td colspan="5" data-i18n="noRecent">Hali so‘rov berilmadi — birinchi savolingizni yozing.</td></tr></tbody>
@@ -207,10 +207,10 @@
               <select id="fProduct" aria-label="Tovar"></select>
               <select id="fRegion" aria-label="Viloyat"></select>
               <select id="fStatus" aria-label="Holat"></select>
-              <input id="fQuery" type="search" data-i18n-placeholder="vDealsSearch" placeholder="Bitim raqami, STIR, kompaniya yoki tovar…">
+              <input id="fQuery" type="search" aria-label="Qidiruv" data-i18n-placeholder="vDealsSearch" placeholder="Bitim raqami, STIR, kompaniya yoki tovar…">
               <button type="button" class="ghost-btn" id="fReset" data-i18n="vReset">Tozalash</button>
             </div>
-            <div class="table-wrap"><table class="data-table">
+            <div class="table-wrap" tabindex="0"><table class="data-table">
               <thead><tr><th data-i18n="vColDeal">№ / SANA</th><th data-i18n="vColProduct">TOVAR</th><th data-i18n="vColRegion">VILOYAT</th><th class="num" data-i18n="vColVolume">HAJM</th><th class="num" data-i18n="vColAmount">SUMMA</th><th class="num" data-i18n="vColPrice">NARX / BIRLIK</th><th data-i18n="vColParties">SOTUVCHI → XARIDOR</th><th data-i18n="vColStatus">HOLAT</th></tr></thead>
               <tbody id="dealsRows"></tbody>
             </table></div>
@@ -227,7 +227,7 @@
           </div>
           <div class="heading-tools"><select id="pYear" aria-label="Yil"></select></div></div>
           <div class="panel view-panel">
-            <div class="table-wrap"><table class="data-table">
+            <div class="table-wrap" tabindex="0"><table class="data-table">
               <thead><tr><th data-i18n="vColProduct">TOVAR</th><th data-i18n="vColCategory">KATEGORIYA</th><th class="num" data-i18n="vColDeals">BITIMLAR</th><th class="num" data-i18n="vColTurnover">AYLANMA, SO‘M</th><th data-i18n="vColShare">ULUSH</th><th class="num" data-i18n="vColTonnes">HAJM, T</th><th class="num" data-i18n="vColAvgPrice">O‘RTACHA NARX</th><th></th></tr></thead>
               <tbody id="productRows"></tbody>
             </table></div>
@@ -249,9 +249,9 @@
                 <button type="button" data-role="broker" data-i18n="vBrokers">Brokerlar</button>
               </div>
               <select id="partYear" aria-label="Yil"></select>
-              <input id="partQuery" type="search" data-i18n-placeholder="vPartSearch" placeholder="Nomi, STIR yoki broker kodi…">
+              <input id="partQuery" type="search" aria-label="Qidiruv" data-i18n-placeholder="vPartSearch" placeholder="Nomi, STIR yoki broker kodi…">
             </div>
-            <div class="table-wrap"><table class="data-table">
+            <div class="table-wrap" tabindex="0"><table class="data-table">
               <thead id="partHead"></thead><tbody id="partRows"></tbody>
             </table></div>
           </div>
