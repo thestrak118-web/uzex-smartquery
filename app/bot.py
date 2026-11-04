@@ -13,6 +13,7 @@ from aiogram.types import (BotCommand, BufferedInputFile, CallbackQuery, InlineK
                            InlineKeyboardMarkup, Message)
 
 from app.agent import Agent, AllModelsBusy, Answer
+from app.sqlfmt import pretty_sql
 
 log = logging.getLogger("bot")
 
@@ -90,7 +91,7 @@ def build_dispatcher(agent: Agent) -> Dispatcher:
         if not ans or not ans.sql:
             await target.answer("SQL yo‘q. / SQL нет.")
             return
-        body = "\n\n".join(f"<pre>{html.escape(s)}</pre>" for s in ans.sql)
+        body = "\n\n".join(f"<pre>{html.escape(pretty_sql(s))}</pre>" for s in ans.sql)
         for chunk in split(body):
             await target.answer(chunk)
 

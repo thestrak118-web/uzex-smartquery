@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from app import db
 from app.agent import FALLBACKS, MODEL, Agent, AllModelsBusy, Answer
 from app.normalize import detect_lang as detect_lang_full, search_key
+from app.sqlfmt import humanize, pretty_sql, top_level_where
 
 log = logging.getLogger("web")
 STATIC = Path(__file__).parent / "static"
@@ -40,20 +41,19 @@ def detect_lang(text: str, hint: str | None) -> str:
     return hint if hint in ("uz", "ru") else "uz"
 
 
-def source_of(ans: Answer) -> dict | None:
+def source_of(ans: Answer, lang: str = "uz") -> dict | None:
     if not ans.sql:
         return None
     sql = " ".join(ans.sql)
     tables = [t for t in TABLES if re.search(rf"\b(from|join)\s+{t}\b", sql, re.I)]
-    filters = []
-    for q in ans.sql:
-        m = re.search(r"\bwhere\b(.+?)(\bgroup\s+by\b|\border\s+by\b|\blimit\b|\bhaving\b|\)\s*select\b|$)",
-                      q, re.I | re.S)
-        if m:
-            f = re.sub(r"\s+", " ", m.group(1)).strip().rstrip(";")
-            if f and f not in filters:
-                filters.append(f[:300])
-    return {"tables": tables, "filters": filters, "sql": ans.sql, "model": ans.model,
+    filters, seen = [], set()
+    for q in ans.sql:  # faqat asosiy so'rov shartlari, ichki so'rovlarniki emas
+        for cond in top_level_where(q):
+            f = humanize(cond, lang)
+            if f["text"] not in seen:
+                seen.add(f["text"])
+                filters.append(f)
+    return {"tables": tables, "filters": filters[:8], "sql": [pretty_sql(q) for q in ans.sql], "model": ans.model,
             "steps": ans.steps, "seconds": ans.seconds}
 
 
@@ -257,7 +257,7 @@ def create_app(agent: Agent | None = None) -> FastAPI:
             "status": "no_data" if no_data else "ok",
             "language": lang,
             "conversation_id": cid,
-            "source": source_of(ans),
+            "source": source_of(ans, lang),
             "visualization": visualization_of(ans, lang),
             "table": ans.table,
         }
