@@ -65,6 +65,10 @@ const api = (path, params = {}) => {
   const qs = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== '' && v !== null && v !== undefined));
   return fetch(`${path}${qs.toString() ? '?' + qs : ''}`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
 };
+function labelCells(tbody){  // telefonda jadval kartaga aylanadi: har katak o'z sarlavhasini ko'rsatadi
+  const heads = [...tbody.closest('table').querySelectorAll('thead th')].map(th => th.textContent.trim());
+  tbody.querySelectorAll('tr').forEach(tr => [...tr.children].forEach((td, i) => { if (heads[i]) td.dataset.label = heads[i]; }));
+}
 const debounce = (fn, ms = 300) => { let h; return (...a) => { clearTimeout(h); h = setTimeout(() => fn(...a), ms); }; };
 const loadingRow = cols => `<tr class="empty-row"><td colspan="${cols}">${esc(t('vLoading'))}</td></tr>`;
 const emptyRow = cols => `<tr class="empty-row"><td colspan="${cols}">${esc(t('vNothing'))}</td></tr>`;
@@ -132,6 +136,7 @@ async function loadDeals(){
   const a = d.total ? (d.page - 1) * d.size + 1 : 0, b = Math.min(d.page * d.size, d.total);
   document.getElementById('dealsInfo').textContent = t('vShown')(fmtInt(a), fmtInt(b), fmtInt(d.total));
   dealsPrev.disabled = d.page <= 1; dealsNext.disabled = b >= d.total;
+  labelCells(body);
   body.querySelectorAll('[data-deal]').forEach(tr => tr.onclick = () => askFromCard(t('qDeal')(tr.dataset.deal)));
 }
 const fYear = document.getElementById('fYear'), fProduct = document.getElementById('fProduct'), fRegion = document.getElementById('fRegion'),
@@ -167,6 +172,7 @@ async function viewProducts(){
       <td><button type="button" class="ask-btn">${esc(t('vAsk'))}</button></td>
     </tr>`;
   }).join('') || emptyRow(8);
+  labelCells(body);
   body.querySelectorAll('[data-product]').forEach(tr => tr.onclick = () => askFromCard(t('qProduct')(tr.dataset.product, pYear.value)));
 }
 pYear.addEventListener('change', viewProducts);
@@ -199,6 +205,7 @@ async function loadParticipants(){
       ${broker ? '' : `<td class="num">${r.products}</td>`}
       <td class="num">${fmtCompact(r.turnover_uzs || 0)}</td>
     </tr>`).join('') || emptyRow(cols);
+  labelCells(body);
   body.querySelectorAll('[data-id]').forEach(tr => tr.onclick = () =>
     askFromCard(broker ? t('qBroker')(tr.dataset.id) : t('qCompany')(tr.dataset.id, partRole)));
 }

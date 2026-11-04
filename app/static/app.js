@@ -87,7 +87,30 @@ function fmtCompact(v){
 }
 const RAW_COL = /(^|_)(year|month|day|id|inn|code|yil|oy|stir)$/i;
 function fmtCell(v, col){ return typeof v === 'number' && RAW_COL.test(col) ? String(v) : fmtNum(v); }
-function prettyCol(c){ return esc(String(c).replace(/_/g, ' ')); }
+const COL_LABELS = [  // SQL alias -> foydalanuvchi tilidagi nom (tartib muhim)
+  [/^(year|yil)$/i, 'Yil', 'Год'], [/^(month|oy)$/i, 'Oy', 'Месяц'],
+  [/cancel.*(pct|share|percent)|(pct|share).*cancel/i, 'Bekor qilingan, %', 'Аннулировано, %'],
+  [/cancel/i, 'Bekor qilingan', 'Аннулировано'],
+  [/(valid|active|concluded|executed|successful)_?deals/i, 'Amalga oshgan', 'Состоявшиеся'],
+  [/growth/i, 'O‘sish, %', 'Рост, %'],
+  [/(share|pct|percent)/i, 'Ulush, %', 'Доля, %'],
+  [/usd/i, 'Summa, USD', 'Сумма, USD'],
+  [/(turnover|amount|total_uzs|sum_uzs|_uzs$|^uzs$|summa)/i, 'Aylanma, so‘m', 'Оборот, сум'],
+  [/(avg|average|mean).*price|price/i, 'O‘rtacha narx', 'Средняя цена'],
+  [/(tonnes|tonn)/i, 'Hajm, t', 'Объём, т'], [/volume|hajm/i, 'Hajm', 'Объём'],
+  [/(deal_?count|total_deals|^deals$|^n$|^cnt$|count|bitimlar)/i, 'Bitimlar soni', 'Число сделок'],
+  [/^product_uz$/i, 'Tovar', 'Товар (uz)'], [/^product(_spec|_raw)?$/i, 'Tovar', 'Товар'],
+  [/region/i, 'Viloyat', 'Регион'], [/inn|stir/i, 'STIR', 'ИНН'], [/broker_code|^code$/i, 'Broker kodi', 'Код брокера'],
+  [/^name$|company|buyer_name|seller_name/i, 'Nomi', 'Наименование'], [/status/i, 'Holat', 'Статус'],
+  [/buyers/i, 'Xaridorlar', 'Покупатели'], [/sellers/i, 'Sotuvchilar', 'Продавцы'], [/contracts/i, 'Shartnomalar', 'Контракты'],
+  [/category/i, 'Kategoriya', 'Категория'], [/^unit$/i, 'Birlik', 'Ед. изм.'], [/rate|kurs/i, 'Kurs', 'Курс'],
+  [/products/i, 'Tovarlar', 'Товары'],
+];
+function prettyCol(c){
+  const hit = COL_LABELS.find(([re]) => re.test(String(c)));
+  const raw = String(c).replace(/_/g, ' ');
+  return esc(hit ? (currentLang === 'ru' ? hit[2] : hit[1]) : raw.charAt(0).toUpperCase() + raw.slice(1));
+}
 
 // --- Javob matni: sodda Markdown -> HTML ---
 function inline(s){
@@ -152,7 +175,8 @@ function chartHtml(viz){
 
 function tableHtml(tbl){
   if (!tbl || !tbl.columns || !tbl.columns.length || !tbl.rows.length) return '';
-  const head = tbl.columns.map(c => `<th>${prettyCol(c)}</th>`).join('');
+  const numeric = tbl.columns.map((c, i) => tbl.rows.every(r => r[i] === null || typeof r[i] === 'number'));
+  const head = tbl.columns.map((c, i) => `<th class="${numeric[i] ? 'num' : ''}">${prettyCol(c)}</th>`).join('');
   const body = tbl.rows.map(r => '<tr>' + r.map((v, i) => `<td class="${typeof v === 'number' ? 'num' : ''}">${fmtCell(v, tbl.columns[i])}</td>`).join('') + '</tr>').join('');
   return `<div class="result-table" tabindex="0"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
@@ -384,7 +408,10 @@ document.getElementById('clearChat').addEventListener('click', () => {
 });
 document.getElementById('viewAll').addEventListener('click', () => { recent = []; store.set('sq_recent', recent); renderRecent(); showToast(t('historyCleared')); });
 document.getElementById('helpButton').addEventListener('click', () => showToast(t('helpText'), 6000));
-document.getElementById('mobileMenu').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+const sidebarEl = document.getElementById('sidebar');
+document.getElementById('mobileMenu').addEventListener('click', () => sidebarEl.classList.toggle('open'));
+document.getElementById('sidebarBackdrop').addEventListener('click', () => sidebarEl.classList.remove('open'));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') sidebarEl.classList.remove('open'); });
 document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => {
   if (window.innerWidth <= 760) document.getElementById('sidebar').classList.remove('open');
 }));
