@@ -413,7 +413,7 @@ document.getElementById('mobileMenu').addEventListener('click', () => sidebarEl.
 document.getElementById('sidebarBackdrop').addEventListener('click', () => sidebarEl.classList.remove('open'));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') sidebarEl.classList.remove('open'); });
 document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => {
-  if (window.innerWidth <= 760) document.getElementById('sidebar').classList.remove('open');
+  if (window.innerWidth <= 874) document.getElementById('sidebar').classList.remove('open');
 }));
 
 function askFromCard(q){
