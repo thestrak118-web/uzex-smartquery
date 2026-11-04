@@ -33,6 +33,7 @@ QUESTION_BUDGET = 70      # bitta savolga jami soniya, keyin «band» xabari
 THINKING = os.getenv("GEMINI_THINKING", "").upper()  # MINIMAL / LOW / MEDIUM / HIGH, bo'sh = model standarti
 MAX_STEPS = 8
 HISTORY_TURNS = 6
+SEED_FILE = db.ROOT / "dataset" / "answer_cache_seed.json"
 CACHE_SALT = "v2-lang-hint"  # agent mantig'i o'zgarsa — eski kesh yaroqsiz
 
 
@@ -100,12 +101,21 @@ class Agent:
         self.system = prompt.build()
         self.history: dict[str, list[types.Content]] = {}
         self.cooldown: dict[str, float] = {}  # model -> shu vaqtgacha ishlatilmaydi
-        self.cache_ver = hashlib.sha1((CACHE_SALT + self.system).encode()).hexdigest()[:10]
+        # Kesh versiyasi promptga bog'liq, lekin bugungi sanaga emas (aks holda kesh har kuni o'chadi)
+        stable = re.sub(r"TODAY: \S+", "", self.system)
+        self.cache_ver = hashlib.sha1((CACHE_SALT + stable).encode()).hexdigest()[:10]
         self.cache_file = db.db_path().with_name("answer_cache.json")
+        # Tekshirilgan javoblar urug'i (repoda): Vercel'da ham har cold start'dan keyin darhol ishlaydi
+        self.cache: dict[str, dict] = {}
         try:
-            self.cache: dict[str, dict] = json.loads(self.cache_file.read_text())
+            seed = json.loads(SEED_FILE.read_text())
+            self.cache = {f"{self.cache_ver}:{q}": v for q, v in seed.items()}
         except (OSError, ValueError):
-            self.cache = {}
+            pass
+        try:
+            self.cache.update(json.loads(self.cache_file.read_text()))
+        except (OSError, ValueError):
+            pass
 
     def _cache_key(self, q: str) -> str:
         return f"{self.cache_ver}:{_norm_q(q)}"
