@@ -64,6 +64,14 @@ Telegram-bot serverless'da polling bilan ishlay olmaydi. Uni Vercel'ga ko‘chir
 - `GET /api/v1/stats`, `/api/v1/filters`, `/api/v1/deals`, `/api/v1/products`, `/api/v1/participants`, `/api/v1/sources` — sahifalar uchun (parametrli SQL),
 -  `POST /api/reset` — suhbatni tozalash, `GET /api/docs` — Swagger
 
+## Testlar
+
+- `tests/test_api.py` — 68 ta API testi (status, validatsiya, SQL injection, chegaralar, tezlik):
+  `pip install pytest requests && UZEX_URL=http://127.0.0.1:8000 pytest tests/test_api.py -v`
+- `tests/e2e.spec.ts` — 29 ta Playwright E2E ssenariy (barcha sahifalar, tugmalar, filtrlar, XSS, mobil, axe):
+  `BASE_URL=http://127.0.0.1:8000 npx playwright test tests/e2e.spec.ts`
+- `eval/` — AI javoblari aniqligi (24 ta savol, to‘g‘ri javob bilan solishtirish)
+
 ## Telegram-bot buyruqlari
 
 - `/start` — salomlashish va misol savollar
